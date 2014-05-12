@@ -6,7 +6,13 @@ faceExpressionsFolder <- "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data M
 outputFolder          <- "Observations"
 
 ## Folders by types of emotions
+angerFolder     = paste(faceExpressionsFolder, 'Emotion 1. Anger',sep="/")
+contemptFolder  = paste(faceExpressionsFolder, 'Emotion 2. Contempt',sep="/")
+disgustFolder   = paste(faceExpressionsFolder, 'Emotion 3. Disgust',sep="/")
+fearFolder      = paste(faceExpressionsFolder, 'Emotion 4. Fear',sep="/")
 happinessFolder = paste(faceExpressionsFolder, 'Emotion 5. Happiness',sep="/")
+sadnessFolder   = paste(faceExpressionsFolder, 'Emotion 6. Sadness',sep="/")
+surpriseFolder  = paste(faceExpressionsFolder, 'Emotion 7. Surprise',sep="/")
 
 ## Global variables
 emotionLabels <- list(
