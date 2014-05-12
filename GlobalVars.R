@@ -1,6 +1,9 @@
-## Global Variables
+## File system configuration variables
 emotionLabelsFolder   <- "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/Data provided/CK+/Emotion_labels/Emotion"
 landmarksFolder       <- "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/Data provided/CK+/Landmarks/Landmarks"
 AULabelsFolder        <- "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/Data provided/CK+/FACS_labels/FACS"
-faceExpressionsFolder <- "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/W2. Feature Extraction/Face expressions"
+faceExpressionsFolder <- "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/facial-expression-recognition/Facial Expressions Sorted"
 outputFolder          <- "Observations"
+
+## Folders by types of emotions
+happinessFolder = paste(faceExpressionsFolder, 'Emotion 5. Happiness',sep="/")
