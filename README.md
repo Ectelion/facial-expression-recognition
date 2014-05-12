@@ -1,7 +1,7 @@
-facial-expression-recognition
+Facial Expression Recognition
 =============================
 
-Main purpose of the project - recognition of emotions based on facial expressions. Cohn-Kanade data set 
+The main purpose of the project - recognition of emotions based on facial expressions. Cohn-Kanade data set 
 (http://www.pitt.edu/~emotion/ck-spread.htm) is used for explorations and training
 
 The Cohn-Kanade is a data set of face images labeled for 8 expressions/emotions :
