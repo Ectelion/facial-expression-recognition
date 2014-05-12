@@ -7,3 +7,15 @@ outputFolder          <- "Observations"
 
 ## Folders by types of emotions
 happinessFolder = paste(faceExpressionsFolder, 'Emotion 5. Happiness',sep="/")
+
+## Global variables
+emotionLabels <- list(
+	neutral  = 0, 
+	anger    = 1, 
+	contempt = 2, 
+	disgust  = 3, 
+	fear     = 4, 
+	happy    = 5, 
+	sadness  = 6, 
+	surprise = 7
+)
