@@ -7,7 +7,7 @@ DATA_SET_DIR = "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Prak
 emotionLabelsFolder   <- paste(DATA_SET_DIR, "CK+/Emotion_labels/Emotion" , sep="/")
 landmarksFolder       <- paste(DATA_SET_DIR, "CK+/Landmarks/Landmarks"    , sep="/")
 AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"       , sep="/")
-faceExpressionsFolder <- paste(WORK_DIR, "Facial Expressions Sorted"      , sep="/")
+faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"  , sep="/")
 outputFolder          <- "Observations"
 
 ## Folders by types of emotions
@@ -19,7 +19,7 @@ happinessFolder = paste(faceExpressionsFolder, 'Emotion 5. Happiness' , sep="/")
 sadnessFolder   = paste(faceExpressionsFolder, 'Emotion 6. Sadness'   , sep="/")
 surpriseFolder  = paste(faceExpressionsFolder, 'Emotion 7. Surprise'  , sep="/")
 
-## Emotional labels sorted in ascending emotional code orders
+## Emotional labels sorted in ascending emotional code order
 ## Usage example: emotionFolders[emotionLabels$happy]
 emotionFolders <- list(angerFolder, contemptFolder, disgustFolder, fearFolder, happinessFolder, sadnessFolder, surpriseFolder)
 
