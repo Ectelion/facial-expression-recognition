@@ -100,6 +100,31 @@ preprocessEmotionFilePaths <- function(inputFolderPath = happinessFolder) {
 	)
 }
 
+## Processes landmarks files within the input folder, generating normalized_change.dat 
+## file with normalized change between landmarks in n.dat and em.dat files
+
+createNormalizedLandmarkFiles <-function(inputFolderPath = happinessFolder) {
+	folders <- list.dirs(inputFolderPath, recursive = FALSE)
+	lapply(folders, 
+		  function(folder) { 
+		  	neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
+		  	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+		  	distances     <- euclideanDistances(neutralFace, emotionalFace)
+		  	normalizedDistances <- normalize(distances)
+		  	destinationPath = paste(folder, "normalized_distances.dat", sep="/")
+		  	normalizedDistances
+		  	file.create(destinationPath, overwrite=TRUE)
+		  	write(normalizedDistances, file=destinationPath, ncolumns=1000)
+		  }
+	)
+}
+
+normalize <- function(array) {
+	s <- sqrt(var(array))
+	normalizedArray <- (array-mean(array)) / s
+	normalizedArray
+}
+
 ## Generates a graph representing average landmarks change between neutral and emotional faces from the Cohn-Kanade data set
 
 plotLandmarkChangesSummary <- function() {
@@ -108,7 +133,7 @@ plotLandmarkChangesSummary <- function() {
 	Average_Change <- res
 	plot(Landmark_ID, Average_Change, col=ifelse(Average_Change>=9, "red", "black"), lwd=4, type='p')
 }
- 
+
 ## * Part 1: Read input files that describe landmarks positions for neutral and emotional faces
 ## Reads files in the following way:
 ## 	1) Scans all the folders in the input folder 
