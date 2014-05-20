@@ -100,7 +100,7 @@ preprocessEmotionFilePaths <- function(inputFolderPath = happinessFolder) {
 	)
 }
 
-## Processes landmarks files within the input folder, generating normalized_change.dat 
+## Processes landmarks files within the input folder, generating normalized_change_xy.dat 
 ## file with normalized change between landmarks in n.dat and em.dat files
 
 createNormalizedLandmarkFiles <-function(inputFolderPath = happinessFolder) {
@@ -109,20 +109,28 @@ createNormalizedLandmarkFiles <-function(inputFolderPath = happinessFolder) {
 		  function(folder) { 
 		  	neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
 		  	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
-		  	distances     <- euclideanDistances(neutralFace, emotionalFace)
-		  	normalizedDistances <- normalize(distances)
-		  	destinationPath = paste(folder, "normalized_distances.dat", sep="/")
-		  	normalizedDistances
+		  	distances     <- emotionalFace - neutralFace
+		  	normalizedDistances <- normalizeMatrix(distances)
+		  	destinationPath = paste(folder, "normalized_change_xy.dat", sep="/")
 		  	file.create(destinationPath, overwrite=TRUE)
-		  	write(normalizedDistances, file=destinationPath, ncolumns=1000)
+		  	write.table(normalizedDistances, file=destinationPath, row.names=FALSE, col.names=FALSE) # ncolumns=2
+		  	paste(destinationPath, "created")
 		  }
 	)
 }
 
-normalize <- function(array) {
-	s <- sqrt(var(array))
-	normalizedArray <- (array-mean(array)) / s
-	normalizedArray
+normalizeMatrix <- function(matrix) {
+	col1   <- matrix[, 1]
+	col2   <- matrix[, 2]
+	matrix[, 1] <- normalizeVector(col1)
+	matrix[, 2] <- normalizeVector(col2)
+	matrix
+}
+
+normalizeVector <- function(vector) {
+	s <- sqrt(var(vector))
+	normalizedVector <- (vector-mean(vector)) / s
+	normalizedVector
 }
 
 ## Generates a graph representing average landmarks change between neutral and emotional faces from the Cohn-Kanade data set
