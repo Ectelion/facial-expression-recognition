@@ -10,14 +10,24 @@ AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"       , sep=
 faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"  , sep="/")
 outputFolder          <- "Observations"
 
+emotionTitles <- c(
+	'Emotion 1. Anger'    , 
+	'Emotion 2. Contempt' , 
+	'Emotion 3. Disgust'  ,
+	'Emotion 4. Fear'     ,
+	'Emotion 5. Happiness',
+	'Emotion 6. Sadness'  ,
+	'Emotion 7. Surprise' 
+)
+
 ## Folders by types of emotions
-angerFolder     = paste(faceExpressionsFolder, 'Emotion 1. Anger'     , sep="/")
-contemptFolder  = paste(faceExpressionsFolder, 'Emotion 2. Contempt'  , sep="/")
-disgustFolder   = paste(faceExpressionsFolder, 'Emotion 3. Disgust'   , sep="/")
-fearFolder      = paste(faceExpressionsFolder, 'Emotion 4. Fear'      , sep="/")
-happinessFolder = paste(faceExpressionsFolder, 'Emotion 5. Happiness' , sep="/")
-sadnessFolder   = paste(faceExpressionsFolder, 'Emotion 6. Sadness'   , sep="/")
-surpriseFolder  = paste(faceExpressionsFolder, 'Emotion 7. Surprise'  , sep="/")
+angerFolder     = paste(faceExpressionsFolder, emotionTitles[1], sep="/")
+contemptFolder  = paste(faceExpressionsFolder, emotionTitles[2], sep="/")
+disgustFolder   = paste(faceExpressionsFolder, emotionTitles[3], sep="/")
+fearFolder      = paste(faceExpressionsFolder, emotionTitles[4], sep="/")
+happinessFolder = paste(faceExpressionsFolder, emotionTitles[5], sep="/")
+sadnessFolder   = paste(faceExpressionsFolder, emotionTitles[6], sep="/")
+surpriseFolder  = paste(faceExpressionsFolder, emotionTitles[7], sep="/")
 
 ## Emotional labels sorted in ascending emotional code order
 ## Usage example: emotionFolders[emotionLabels$happy]
