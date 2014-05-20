@@ -10,6 +10,10 @@ AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"       , sep=
 faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"  , sep="/")
 outputFolder          <- "Observations"
 
+# Training and test folders
+trainingDataFolder <- paste(WORK_DIR, "Training", sep="/")
+testDataFolder     <- paste(WORK_DIR, "Training/Test", sep="/")
+
 emotionTitles <- c(
 	'Emotion 1. Anger'    , 
 	'Emotion 2. Contempt' , 
@@ -44,3 +48,5 @@ emotionLabels <- list(
 	sadness  = 6, 
 	surprise = 7
 )
+
+
