@@ -79,7 +79,8 @@ createFolders <- function(folderPathsList = emotionFolders, targetDirectory = ou
 		function(folderPath) {
 			if (!file.exists(folderPath)) {
 				dir.create(folderPath)
-			} 
+				paste(folderPath, "-> folder created")
+			}
 		}
 	)
 } 
