@@ -55,16 +55,16 @@ findAndCopyEmotionFiles <- function(emotionCode, targetDirectory = outputFolder)
 			sPos <- regexpr("S[[:digit:]][[:digit:]][[:digit:]]/", path)   
 			endPos <- regexpr("/[[:digit:]][[:digit:]][[:digit:]]/", path)
 			if (endPos!=-1) {
-			endPos <- endPos+4
-			copyFromFolder <- substring(path, sPos, endPos)
-			copyFromFolder <- paste(landmarksFolder, copyFromFolder, sep="/")
-			copyToFolder   <- substring(path, sPos, endPos-4-1)
-			newFolderFullPath <- paste(targetDirectory, copyToFolder, sep="/")
-			if (!file.exists(newFolderFullPath)) {
-				dir.create(newFolderFullPath)
-			}
-			copyAllFiles(copyFromFolder, newFolderFullPath)
-			paste(copyFromFolder, newFolderFullPath, sep="=>")
+				endPos <- endPos+4
+				copyFromFolder <- substring(path, sPos, endPos)
+				copyFromFolder <- paste(landmarksFolder, copyFromFolder, sep="/")
+				copyToFolder   <- substring(path, sPos, endPos-4-1)
+				newFolderFullPath <- paste(targetDirectory, copyToFolder, sep="/")
+				if (!file.exists(newFolderFullPath)) {
+					dir.create(newFolderFullPath)
+				}
+				copyAllFiles(copyFromFolder, newFolderFullPath)
+				paste(copyFromFolder, newFolderFullPath, sep="=>")
 			} else {
 				NA
 			}
@@ -121,7 +121,7 @@ analyzeFaceExpressions <- function(inputFolderPath = happinessFolder) {
 	neutralSum   <- list()
 	emotionalSum <- list()
 	cnt <- 1
-	
+	     
 	lapply(landmarksFolders, 
 		function(folder) {
 			neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
