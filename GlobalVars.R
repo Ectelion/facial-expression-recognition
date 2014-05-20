@@ -31,7 +31,7 @@ surpriseFolder  = paste(faceExpressionsFolder, emotionTitles[7], sep="/")
 
 ## Emotional labels sorted in ascending emotional code order
 ## Usage example: emotionFolders[emotionLabels$happy]
-emotionFolders <- list(angerFolder, contemptFolder, disgustFolder, fearFolder, happinessFolder, sadnessFolder, surpriseFolder)
+emotionFolders <- c(angerFolder, contemptFolder, disgustFolder, fearFolder, happinessFolder, sadnessFolder, surpriseFolder)
 
 ## Emotional labels with codes
 emotionLabels <- list(
