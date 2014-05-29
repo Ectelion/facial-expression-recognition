@@ -49,4 +49,7 @@ emotionLabels <- list(
 	surprise = 7
 )
 
+## Abbreviated names for packages
+pFE <- "FeatureExtraction.R"
+pC  <- "Classifier.R"
 

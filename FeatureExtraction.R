@@ -136,15 +136,9 @@ loadData <- function(inputFolderPath=faceExpressionsFolder) {
 		  	cnt <- 0
 		  	for (folder in folders) { 
 		  	  	normalizedDistances <- read.table(paste(folder,"normalized_change_xy.dat", sep="/"))
-		  	  	features <- c(normalizedDistances[, 1], normalizedDistances[, 2])
-		  	  	
+		  	  	features <- c(normalizedDistances[, 1], normalizedDistances[, 2])  	  	
 		  	  	trainingData <<- rbind.data.frame(trainingData, features)
 		  	  	labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
-		  	  	
-		  		#cnt <- cnt + 1
-		  		#if (cnt == 2) {
-		  		#	break
-		  		#}
 			}
 			emotionCode <<- emotionCode + 1  
 		}
@@ -153,72 +147,6 @@ loadData <- function(inputFolderPath=faceExpressionsFolder) {
 	colnames(trainingData) <- c(paste("X", 1:136, sep=""), "emotion")
 	rownames(trainingData) <- NULL
 	trainingData
-}
-
-fitDTClassifier <- function(dataSet = loadTrainingData()) {
-	formula <- emotion ~ X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+X13+X14+X15+X16+X17+X18+X19+X20+X21+X22+X23+X24+X25+X26+X27+X28+X29+X30+X31+X32+X33+X34+X35+X36+X37+X38+X39+X40+X41+X42+X43+X44+X45+X46+X47+X48+X49+X50+X51+X52+X53+X54+X55+X56+X57+X58+X59+X60+X61+X62+X63+X64+X65+X66+X67+X68+X69+X70+X71+X72+X73+X74+X75+X76+X77+X78+X79+X80+X81+X82+X83+X84+X85+X86+X87+X88+X89+X90+X91+X92+X93+X94+X95+X96+X97+X98+X99+X100+X101+X102+X103+X104+X105+X106+X107+X108+X109+X110+X111+X112+X113+X114+X115+X116+X117+X118+X119+X120+X121+X122+X123+X124+X125+X126+X127+X128+X129+X130+X131+X132+X133+X134+X135+X136
-	fit <- rpart(formula, method="class", data=dataSet, control=rpart.control(minsplit=1));
-	fit
-}
-
-# Estimates cross validation for the specified data set, performing splits into
-# K subsets. Returns mean accuracy cross validation  
-
-crossValidation <- function(dataSet, K = 5) {
-	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
-	for(i in 1:K) {
-		train <- dataSet[folds$subsets[folds$which != i], ]
-		validation <- dataSet[folds$subsets[folds$which == i], ]
-		classifier <- fitDTClassifier(train)
-		pred <- predict(classifier, validation, type="class")
-		cm   <- table(pred, validation[, 137])
-		acc  <- (cm[1,1]+cm[2,2]+cm[3,3]+cm[4,4]+cm[5,5]+cm[6,6]+cm[7,7])/sum(cm)
-		accuracy <- rbind(accuracy, acc)
-	}
-	accuracy
-}
-
-# Estimates confusion matrix for the specifed classifier and test data
-# Usage example: confusionMatrix(fit, dt, dt[, 137])
-
-confusionMatrix <- function(fittedClassifier, testData, trueLabels) {
-	pred <- predict(fittedClassifier, testData, type="class")
-	table(trueLabels, pred)
-} 
-
-trainTestClassifier <- function(trainFolder=trainingDataFolder, testFolder=testDataFolder) {
-	trainData  <- loadData(trainFolder)
-	testData   <- loadData(testFolder)
-	trueLabels <- testData[, 137]
-	fit <- fitDTClassifier(trainData);
-	res <- testClassifier(fit, testData, trueLabels)
-	res/length(trueLabels)
-}
-
-testClassifier <- function(fittedClassifier, inputs, trueLabels) {
-	hitsNum  <- 0
-	labels <- c(8); 
-	for (inputId in 1: nrow(inputs)) {
-		probs      <-  predict(fittedClassifier, inputs[inputId, 1:136])
-		max        <- -1
-		maxLabelId <-  1
-		labelId    <-  1  
-		
-		for (labelProb in probs) {
-			if (labelProb > max) {
-				max   <- labelProb
-				maxLabelId <- labelId
-			}
-			labelId <- labelId + 1
-		}
-		labels <- c(labels, maxLabelId)
-		if (maxLabelId == trueLabels[inputId]) {
-			hitsNum <- hitsNum + 1
-		}
-	}
-	hitsNum
-	#labels
 }
 
 normalizeMatrix <- function(matrix) {
@@ -242,6 +170,20 @@ plotLandmarkChangesSummary <- function() {
 	Landmark_ID <- 1:length(res)
 	Average_Change <- res
 	plot(Landmark_ID, Average_Change, col=ifelse(Average_Change>=9, "red", "black"), lwd=4, type='p')
+}
+
+## Visualizes face change, plotting the peak and neutral emotions 
+
+plotEntry <- function(folder) {
+	neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
+	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+	plot(neutralFace[, 1], neutralFace[, 2])
+	plot(emotionalFace[, 1], emotionalFace[, 2])
+	plot(AU_ID, Average_Change, col=ifelse(Average_Change>=9, "orange", "black"), lwd=4, type='p')
+}
+
+relevantDTFeatures <- function(dataSet) {
+	dataSet[, c("X52", "X87", "X117", "X102", "X118", "X120", "X125", "X92", "X89", "X101", "X123")]
 }
 
 ## * Part 1: Read input files that describe landmarks positions for neutral and emotional faces
