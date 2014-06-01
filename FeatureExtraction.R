@@ -183,7 +183,8 @@ plotEntry <- function(folder) {
 }
 
 relevantDTFeatures <- function(dataSet) {
-	dataSet[, c("X52", "X87", "X117", "X102", "X118", "X120", "X125", "X92", "X89", "X101", "X123")]
+	#  c("X52", "X87", "X117", "X102", "X118", "X120", "X125", "X92", "X89", "X101", "X123")
+	dataSet[, c("X52", "X87", "X89", "X92", "X101", "X102", "X117", "X118", "X120", "X123")]
 }
 
 ## * Part 1: Read input files that describe landmarks positions for neutral and emotional faces
