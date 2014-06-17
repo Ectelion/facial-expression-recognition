@@ -1,6 +1,7 @@
 ## Libs
 library(rpart)
 library(cvTools)
+library(FSelector)
 
 ## Load configurations 
 source('GlobalVars.R')
@@ -224,7 +225,7 @@ analyzeFaceExpressions <- function(inputFolderPath = happinessFolder) {
 	## Obtain the average change of landmarks across all faces
 	neutralAvg     <- neutralSum / cnt
 	emotionalAvg   <- emotionalSum / cnt  
-  
+	neutralAvgT <<- neutralAvg
 	## Constructing Face maps - visualization characterizing average changes of landmarks across all faces 
 	dataToPlot <- neutralAvg
 	dataToPlot <- rbind(dataToPlot, emotionalAvg)

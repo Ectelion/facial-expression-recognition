@@ -51,5 +51,5 @@ emotionLabels <- list(
 
 ## Abbreviated names for packages
 pFE <- "FeatureExtraction.R"
-pC  <- "Classifier.R"
+pC  <- "Classification.R"
 
