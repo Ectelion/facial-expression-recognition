@@ -242,3 +242,21 @@ analyzeFaceExpressions <- function(inputFolderPath = happinessFolder) {
 	totalAvg <- sum / cnt
 	totalAvg
 }
+
+## Processes the data set and identifies entries without emotional labels
+
+findUnlabeledData <- function() {
+	f_lb <- list.files(emotionLabelsFolder)
+	folders_lb <- c()
+	lapply(f_lb, function(folder) {
+		subjF <- paste(emotionLabelsFolder, folder, sep="/")
+		f <- list.files(subjF)
+		for (imageFolder in f) { 
+			folders_lb <<- c(folders_lb, paste(folder, imageFolder, sep="/"))
+		}
+	})
+	labeled <- list.files(emotionLabelsFolder, recursive=T)
+	labeled_sub <- substring(labeled, 1, 8)
+	unlabeled <- setdiff(folders_lb, labeled_sub)
+	unlabeled
+}
