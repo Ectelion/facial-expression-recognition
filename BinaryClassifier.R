@@ -14,6 +14,15 @@ optimalBinFormulas <- list(
 	, emotion ~ X46+X57+X59+X87+X103
 ) 
 
+optimalDiffFormulas <- list(
+	  "1-3" = emotion ~ X35+X76+X101+X121+X122+X124+X128+X130
+	, "3-4" = emotion ~ X36+X48+X52+X134
+	, "3-5" = emotion ~ X45+X55+X118
+	, "4-7" = emotion ~ X18+X55+X134
+	, "1-6" = emotion ~ X66+X91+X106+X124
+	, "2-6" = emotion ~ X23+X30+X57
+) 
+
 ## Creates binary classificator object, consisted of binary classifitarors for 
 ## each emotion and methods for prediction, cross validation, etc.
 
@@ -146,17 +155,24 @@ initDifferentiatingClassifier <- function(dataSet=loadData()) {
 			emotionIdY <- emotionIdX
 			emotionIdX <- tmp
 		}
-		key <- paste(emotionIdX, emotionIdY, sep="_")
+		key <- paste(emotionIdX, emotionIdY, sep="-")
 		#if (key %in% names(differentiatingClassifiers) ) {
 			# Retrieve and return cached entry
-		#	differentiatingClassifiers[key]	
+			#differentiatingClassifiers[key]	
 		#} else {
+			
 			emX <- dataSet[dataSet[,"emotion"]==emotionIdX, ]
 			emY <- dataSet[dataSet[,"emotion"]==emotionIdY, ]
 			differentiatorDt <- rbind(emX, emY) 
-			formula <- emotion ~ X66+X76+X91+X117+X119+X121+X128 
+			if (key %in% names(optimalDiffFormulas)) {
+				formula <- optimalDiffFormulas[[key]]
+				print(key)
+				print(formula)
+			} else {
+				formula <- emotion ~ X66+X76+X91+X117+X119+X121+X128
+			}
 			fitDiff <- rpart(formula, data=data.frame(differentiatorDt), method="class", control=rpart.control(minsplit=1, cp= 0.006147541))
-			#differentiatingClassifiers[key] <- fitDiff
+			#differentiatingClassifiers[key] <<- fitDiff
 			fitDiff
 		#}
 	}
@@ -221,6 +237,58 @@ crossValidationBin2 <- function(dataSet, K = 10) {
 		validation <- c(validation[, ncol(dataSet)]) 
 		eq <- as.vector(pred) == as.vector(validation)
 		acc <- sum(eq)/length(eq)
+		accuracy <- rbind(accuracy, acc)
+	}
+	accuracy <- mean(accuracy)
+	print(accuracy)
+	accuracy
+}
+
+expC <- function(dataSet, K = 10) {
+	accuracy <- numeric(0)
+	folds    <- cvFolds(nrow(dataSet), K=K)
+	totalCm  <- matrix(rep(0, 49), 7, 7)
+	for(i in 1:K) {
+		train <- dataSet[folds$subsets[folds$which != i], ]
+		validation <- dataSet[folds$subsets[folds$which == i], ]
+		classifier <- fitDTClassifier(train)
+		diffClass <- initDifferentiatingClassifier(train)
+		prob <- predict(classifier, validation)
+		validation <- c(validation[, ncol(dataSet)]) 
+		ans <- c(1:length(prob))
+		
+		
+		for (i in 1:nrow(prob)) {
+			classProbs <- prob[i,] 
+			print(classProbs)
+			# Identifying the most probable classes
+			n <- length(classProbs)
+			sortedProbs <- sort(classProbs, partial=n)
+			max1    <- sortedProbs[n]
+			max2    <- sortedProbs[n-1]
+			
+			# Handling the case when the two top indices are a tie
+			# or when the second top element has a tie
+			max1Ind <- max(which(classProbs==max1))
+			max2Ind <- min(which(classProbs==max2))
+			
+			if (max1-max2 >= 0.5) {
+				# If the top probability is high enough, return the result
+				ans[i] <- max1Ind
+				
+			} else {
+				# Launching differentiating classifiers for dealing with the confusion 
+				print(paste(max1Ind, max2Ind, max1, max2))
+				print(sortedProbs)
+				fitDiff <- diffClass$fit(max1Ind, max2Ind)
+				predDiff <- predict(fitDiff, dt[i,]) #, type="class")
+				#print(pred)
+				maxId <- which.max(predDiff)
+				ans[i] <- as.numeric(dimnames(predDiff)[[2]][maxId])
+			}
+		}
+		
+		acc <- sum(ans==validation) / length(validation)
 		accuracy <- rbind(accuracy, acc)
 	}
 	accuracy <- mean(accuracy)
