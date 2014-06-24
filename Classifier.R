@@ -1,7 +1,7 @@
 source("RandomForestClassifier.R")
 source("BinaryClassifier.R")
 source("DecisionTreeClassifier.R")
-
+source("SVMClassifier.R")
 
 ## Specifies a common interface for a variety of classificator objects, containing 
 ## functionality for training, prediction, cross validation, etc.
@@ -18,6 +18,9 @@ classifier <- function(data, type="decision_tree") {
 	}
 	else if (type=="binary") {
 		classifier <- initBinClassifier(data)
+	}
+	else if (type=="svm") {
+		classifier <- initSVMClassifier(data)
 	}
 	
 	predict <- function(entry) {

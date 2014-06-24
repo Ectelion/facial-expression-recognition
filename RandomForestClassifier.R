@@ -53,7 +53,8 @@ initForest <- function(trainingSet, treesNum=10) {
 	forest.hitsNum <- function(testSet, trueLabels) {
 		predictions <- test(testSet)
 		hits <- predictions == trueLabels
-		sum(hits)
+		hitsNum <- sum(hits)
+		hitsNum
 	}
 	
 	forest.crossValidationRF <- function(dataSet, K=10) {

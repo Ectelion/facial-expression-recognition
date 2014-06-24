@@ -4,10 +4,11 @@ WORK_DIR     = "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Prak
 DATA_SET_DIR = "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/Data provided"
 
 ## File system configuration variables
-emotionLabelsFolder   <- paste(DATA_SET_DIR, "CK+/Emotion_labels/Emotion" , sep="/")
-landmarksFolder       <- paste(DATA_SET_DIR, "CK+/Landmarks/Landmarks"    , sep="/")
-AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"       , sep="/")
-faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"  , sep="/")
+imagesFolder          <- paste(DATA_SET_DIR, "CK+/Landmarks/cohn-kanade-images" , sep="/")
+emotionLabelsFolder   <- paste(DATA_SET_DIR, "CK+/Emotion_labels/Emotion"       , sep="/")
+landmarksFolder       <- paste(DATA_SET_DIR, "CK+/Landmarks/Landmarks"          , sep="/")
+AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"             , sep="/")
+faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"        , sep="/")
 outputFolder          <- "Observations"
 
 # Training and test folders

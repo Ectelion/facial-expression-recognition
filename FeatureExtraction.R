@@ -25,10 +25,10 @@ copyAllFiles <- function(sourceDirectory, targetDirectory) {
 	files <- list.files(sourceDirectory, recursive = FALSE);
 	lapply(files, 
 		function(filePath) {
-		path = paste(sourceDirectory, filePath, sep="")
-		file.copy(from=path, to=targetDirectory)
-    }
-  )
+			path = paste(sourceDirectory, filePath, sep="")
+			file.copy(from=path, to=targetDirectory)
+    		}
+  	)
 }
 
 ## Processes the Cohn-Kanade data set and returns a list of paths to labeled emotion files
@@ -259,4 +259,23 @@ findUnlabeledData <- function() {
 	labeled_sub <- substring(labeled, 1, 8)
 	unlabeled <- setdiff(folders_lb, labeled_sub)
 	unlabeled
+}
+
+## Find and copies all unlabeled image sequences to the target directory
+
+copyUnlabeledData <- function(targetDirectory="Unlabeled data") {
+	if (!file.exists(targetDirectory)) {
+		dir.create(targetDirectory)
+	}
+	folders <- findUnlabeledData()
+	lapply(folders, 
+		function(folderPath) {
+			fromPath   <- paste(imagesFolder, folderPath, sep="/")
+			targetPath <- paste(targetDirectory, folderPath, sep="/")
+			if (!file.exists(targetPath)) {
+				dir.create(targetPath)
+			}
+			file.copy(from=fromPath, to=targetDirectory)
+		}
+	)
 }
