@@ -5,13 +5,13 @@ The main purpose of the project is recognition of emotions based on facial expre
 (http://www.pitt.edu/~emotion/ck-spread.htm) is used for explorations and training.
 
 The Cohn-Kanade is a data set of face images labeled for 7 expressions/emotions :
-1. Anger
-2. Contempt
-3. Disgust
-4. Fear
-5. Happiness
-6. Sadness
-7. Surprise
+* Anger
+* Contempt
+* Disgust
+* Fear
+* Happiness
+* Sadness
+* Surprise
 
 The solution consists of versatile classifiers including Decision Tree, Random Forests, Support Vector Machines, DT based Binary Classifier, simple hybrid classifier.
 
