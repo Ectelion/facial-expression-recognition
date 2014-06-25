@@ -66,7 +66,7 @@ fitDTClassifier <- function(dataSet = loadData()) {
 	optimalForwardSearch <- emotion ~  X66+X76+X91+X117+X119+X121+X128 #+X136#+X112+X113
 	optBin <- emotion ~ X46+X57+X59+X87+X103 # X90+X100+X106+X121+X134 #X89+X106+X117+X135 #X19+X55+X128 #X37+X49+X55+X57+X99+X104+X117+X121+X127 #X54+X103+X124 #X41+X54+X93+X119+X124+X127
 	optDif <- emotion ~ X23+X30+X57 #X23+X30+X57+X76 # X66+X91+X133 # X36+X48+X52+X134 #X30+X65+X103+X112+X122 # # Alt:  X35+X76+X101+X121+X122+X124+X128+X130
-	formula <- optimalForwardSearchGLOB #optBin # optimalForwardSearch #optimalForwardSearchGLOB #optimalChange 
+	formula <- optimalChange #optBin # optimalForwardSearch #optimalForwardSearchGLOB #optimalChange 
 	fit <- rpart(formula, method="class", data=dataSet, control=rpart.control(minsplit=1, cp= 0.006147541))
 	fit
 }
