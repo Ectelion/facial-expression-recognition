@@ -125,6 +125,8 @@ createNormalizedLandmarkFiles <- function(inputFolderPath = happinessFolder) {
 	)
 }
 
+## Returns labeled training data with normalized landmark displacements as features
+
 loadData <- function(inputFolderPath=faceExpressionsFolder) {
 	emotionCode <- 1
 	trainingData <- data.frame()
@@ -141,6 +143,42 @@ loadData <- function(inputFolderPath=faceExpressionsFolder) {
 		  	  	trainingData <<- rbind.data.frame(trainingData, features)
 		  	  	labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
 			}
+			emotionCode <<- emotionCode + 1  
+		}
+	)
+	trainingData <- cbind.data.frame(trainingData, labelsColumn)
+	colnames(trainingData) <- c(paste("X", 1:136, sep=""), "emotion")
+	rownames(trainingData) <- NULL
+	trainingData
+}
+
+## Returns labeled training data with peak emotions as features. Neutral emotionals may be optionally included (loadNeutral parameter)  
+
+loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral = FALSE) {
+	emotionCode <- 1
+	trainingData <- data.frame()
+	labelsColumn <- data.frame()
+	
+	lapply(emotionTitles, 
+		function(emotionTitle) {
+			emotionFolder <- paste(inputFolderPath, emotionTitle, sep="/")
+			folders <- list.dirs(emotionFolder, recursive = FALSE)
+		  	cnt <- 0
+		  	for (folder in folders) { 
+		  	  	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+		  	  	emotionalFace <- normalizeMatrix(emotionalFace)
+                emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
+		  	  	trainingData <<- rbind.data.frame(trainingData, emotionalFeatures)
+		  	  	labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
+                
+                if (loadNeutral) {
+                    neutralFace <- read.table(paste(folder,"n.dat", sep="/"))
+                    neutralFace <- normalizeMatrix(neutralFace)
+                    neutralFeatures <- c(neutralFace[, 1], neutralFace[, 2])
+                    trainingData <<- rbind.data.frame(trainingData, neutralFace)
+                    labelsColumn <<- rbind.data.frame(labelsColumn, 0)
+                }
+            }
 			emotionCode <<- emotionCode + 1  
 		}
 	)
