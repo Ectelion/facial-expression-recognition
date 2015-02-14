@@ -22,7 +22,7 @@ optimalFormulasSVM <- list(
 
 initSVMClassifier <- function(trainingSet) {
 	# Training phase
-	formula <- overallOptimalFormulaSVM 
+	formula <- emotion ~ . #overallOptimalFormulaSVM 
 	svm.classifier <- svm(formula, data = trainingSet, kernel="linear", type="C-classification")
 	
 	svm.predict <- function(data) {
@@ -50,10 +50,13 @@ initSVMClassifier <- function(trainingSet) {
 ## the specified data set, performing splits into K subsets. 
 ## Returns mean accuracy cross validation  
 
-crossValidationSVM <- function(dataSet, K = 10) {
+crossValidationSVM2 <- function(dataSet, K = 10) {
+	trueLabelsColumn <- ncol(dataSet)
+	classesNum <- length(unique(dataSet[, trueLabelsColumn]))  
 	accuracy <- numeric(0)
 	folds    <- cvFolds(nrow(dataSet), K=K)
-	totalCm  <- matrix(rep(0, 49), 7, 7)
+	totalCm  <- matrix(0, classesNum, classesNum)
+	
 	for(i in 1:K) {
 		train <- dataSet[folds$subsets[folds$which != i], ]
 		validation <- dataSet[folds$subsets[folds$which == i], ]
@@ -61,10 +64,11 @@ crossValidationSVM <- function(dataSet, K = 10) {
 		pred <- classifier$predict(validation)
 		pred <- round(as.numeric(pred))
 		validation <- c(validation[, ncol(dataSet)]) 
-		validation <- c(validation, c(1, 2, 3, 4, 5, 6, 7))
-		pred <-  c(pred, c(1, 2, 3, 4, 5, 6, 7))
+		## Adding one dumb prediction per class. They will be extracted from the final result 
+		validation <- c(validation, c(1:classesNum))
+		pred <-  c(pred, c(1:classesNum))
 		cm   <- table(pred, validation)
-		acc  <- (cm[1,1]+cm[2,2]+cm[3,3]+cm[4,4]+cm[5,5]+cm[6,6]+cm[7,7]-7)/(sum(cm)-7)
+		acc  <- (sum(diag(cm)) - classesNum) / (sum(cm) - classesNum)
 		totalCm <- totalCm + cm
 		accuracy <- rbind(accuracy, acc)
 	}
