@@ -152,19 +152,22 @@ loadData <- function(inputFolderPath=faceExpressionsFolder) {
 	trainingData
 }
 
-## Returns labeled training data with peak emotions as features. Neutral emotionals may be optionally included (loadNeutral parameter)  
+## Returns labeled training data with peak emotions as features. 
+## * loadNeutral param - using this, neutral emotionals may be optionally included  
+## * balanceLabels - balances the number of neutral faces in the data to avoid biased training 
 
-loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral = FALSE) {
+loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral = FALSE, balanceLabels = TRUE) {
 	emotionCode <- 1
 	trainingData <- data.frame()
 	labelsColumn <- data.frame()
-	
+	cnt <- 0
+    
 	lapply(emotionTitles, 
 		function(emotionTitle) {
 			emotionFolder <- paste(inputFolderPath, emotionTitle, sep="/")
 			folders <- list.dirs(emotionFolder, recursive = FALSE)
-		  	cnt <- 0
-		  	for (folder in folders) { 
+		  
+            for (folder in folders) { 
 		  	  	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
 		  	  	emotionalFace <- normalizeMatrix(emotionalFace)
                 emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
@@ -172,14 +175,17 @@ loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral 
 		  	  	labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
                 
                 if (loadNeutral) {
-                    neutralFace <- read.table(paste(folder,"n.dat", sep="/"))
-                    neutralFace <- normalizeMatrix(neutralFace)
-                    neutralFeatures <- c(neutralFace[, 1], neutralFace[, 2])
-                    trainingData <<- rbind.data.frame(trainingData, neutralFace)
-                    labelsColumn <<- rbind.data.frame(labelsColumn, 0)
+                    if (!balanceLabels || cnt%%7 == 0) {
+                        neutralFace <- read.table(paste(folder,"n.dat", sep="/"))
+                        neutralFace <- normalizeMatrix(neutralFace)
+                        neutralFeatures <- c(neutralFace[, 1], neutralFace[, 2])
+                        trainingData <<- rbind.data.frame(trainingData, neutralFeatures)
+                        labelsColumn <<- rbind.data.frame(labelsColumn, 8)
+                    }
                 }
+                cnt <<- cnt + 1
             }
-			emotionCode <<- emotionCode + 1  
+            emotionCode <<- emotionCode + 1  
 		}
 	)
 	trainingData <- cbind.data.frame(trainingData, labelsColumn)
