@@ -3,8 +3,11 @@ library(e1071)
 
 ## Static vars
 
-## Optimal features for multi-class SVM classification
-overallOptimalFormulaSVM <- emotion ~ X33+X55+X65+X89+X91+X111+X117+X121+X127+X128+X130 
+## Optimal features for multi-class SVM classification (landmarks displacement approach)
+overallOptimalFormulaSVMDisplacement <- emotion ~ X33+X55+X65+X89+X91+X111+X117+X121+X127+X128+X130 
+
+## Optimal features for multi-class SVM classification (single frame approach)
+overallOptimalFormulaSVMSingleFrame <- emotion ~ X8+X21+X27+X49+X53+X65+X76+X88+X89+X90+X93+X97+X102+X104+X110+X115+X117+X118+X121+X122+X124+X125+X128+X130+X135+X136
 
 ## Optimal features for a specific emotion (for binary SVM classification)
 optimalFormulasSVM <- list(
@@ -22,7 +25,7 @@ optimalFormulasSVM <- list(
 
 initSVMClassifier <- function(trainingSet) {
 	# Training phase
-	formula <- emotion ~ . #overallOptimalFormulaSVM 
+	formula <- overallOptimalFormulaSVMSingleFrame 
 	svm.classifier <- svm(formula, data = trainingSet, kernel="linear", type="C-classification")
 	
 	svm.predict <- function(data) {
