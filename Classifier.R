@@ -36,8 +36,9 @@ classifier <- function(data, type="decision_tree") {
 	}
 	
 	# Static method, performing a K-foldes cross-validation  
-	crossValidation <- function(K=10) {
-		classifier$crossValidation(data, K)
+	crossValidation <- function(dataSet=data, K=10) {
+		print("fwe")
+		classifier$crossValidation(dataSet, K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys

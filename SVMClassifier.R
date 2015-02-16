@@ -40,8 +40,8 @@ initSVMClassifier <- function(trainingSet) {
 		hitsNum
 	}
 	
-	svm.crossValidation <- function(K=10) {
-		crossValidationSVM(trainingSet, K)
+	svm.crossValidation <- function(dataSet=trainingSet, K=10) {
+		crossValidationSVM(dataSet, K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys

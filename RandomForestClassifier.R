@@ -57,12 +57,12 @@ initForest <- function(trainingSet, treesNum=10) {
 		hitsNum
 	}
 	
-	forest.crossValidationRF <- function(dataSet, K=10) {
+	forest.crossValidation <- function(dataSet=trainingSet, K=10) {
 		crossValidationRF(dataSet, K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys
-	list(classifier=forest, predict=forest.predict, hitsNum = forest.hitsNum, crossValidation=forest.crossValidation)
+	list(classifier=forest, predict=forest.predict, hitsNum=forest.hitsNum, crossValidation=forest.crossValidation)
 }  
 
 ## Random Forest implementation based on the randomForest package
@@ -120,7 +120,7 @@ crossValidationRF <- function(dataSet, K = 10) {
 		totalCm <- totalCm + cm
 		accuracy <- rbind(accuracy, acc)
 	}
-	print (totalCm)
+	print(totalCm)
 	mean(accuracy)
 }
 

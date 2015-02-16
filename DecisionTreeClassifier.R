@@ -40,12 +40,12 @@ initTree <- function(trainingSet) {
 		hitsNum
 	}
 	
-	tree.crossValidation <- function(K=10) {
-		crossValidationDT(trainingSet, K)
+	tree.crossValidation <- function(dataSet=trainingSet, K=10) {
+		crossValidationDT(dataSet, K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys
-	list(classifier=tree, predict=tree.predict, hitsNum = tree.hitsNum, crossValidation=tree.crossValidation)
+	list(classifier=tree, predict=tree.predict, hitsNum=tree.hitsNum, crossValidation=tree.crossValidation)
 }  
 
 ## Fits rpart based Decision Tree classifier
