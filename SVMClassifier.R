@@ -11,39 +11,39 @@ overallOptimalFormulaSVMSingleFrame <- emotion ~ X8+X21+X27+X49+X53+X65+X76+X88+
 
 ## Optimal features for a specific emotion (for binary SVM classification)
 optimalFormulasSVM <- list(
-	emotion ~ X40+X43+X48+X92+X111+X127,
-	emotion ~ X87+X93+X124+X126,
-	emotion ~ X23+X25+X49+X54+X57+X67+X91+X104+X106+X118+X125+X135+X136,
-	emotion ~ X37+X104+X129+X33+X55+X89+X91+X111+X117+X121+X127+X128+X130 , #overallOptimalFormulaSVM, #X40 || X122 || X130(?) 
-	emotion ~ X26+X66+X101+X115+X117+X120+X132,
-	emotion ~ X48+X50+X90+X117+X136,
-	emotion ~ X19+X76+X87+X102+X125+X133
+    emotion ~ X40+X43+X48+X92+X111+X127,
+    emotion ~ X87+X93+X124+X126,
+    emotion ~ X23+X25+X49+X54+X57+X67+X91+X104+X106+X118+X125+X135+X136,
+    emotion ~ X37+X104+X129+X33+X55+X89+X91+X111+X117+X121+X127+X128+X130 , #overallOptimalFormulaSVM, #X40 || X122 || X130(?) 
+    emotion ~ X26+X66+X101+X115+X117+X120+X132,
+    emotion ~ X48+X50+X90+X117+X136,
+    emotion ~ X19+X76+X87+X102+X125+X133
 )
 
 ## Creates SVM based classificator object, containing 
 ## methods for prediction, cross validation, etc.
 
 initSVMClassifier <- function(trainingSet) {
-	# Training phase
-	formula <- overallOptimalFormulaSVMSingleFrame 
-	svm.classifier <- svm(formula, data = trainingSet, kernel = "linear", type = "C-classification")
-	
-	svm.predict <- function(data) {
-		predict(svm.classifier, data)
-	}
-		
-	svm.hitsNum <- function(inputs, trueLabels) {
-		predictions <- svm.predict(inputs)
-		hits <- predictions == trueLabels
-		print(predictions)
-		hitsNum <- sum(hits)
-		hitsNum
-	}
-	
-	svm.crossValidation <- function(dataSet = trainingSet, K = 10) {
-		crossValidation(dataSet, classifierType = "svm", K)
-	}
-	
-	## Returns a list representation of the object with methods and properties accessed through indexed keys
-	list(classifier = svm.classifier, predict = svm.predict, hitsNum = svm.hitsNum, crossValidation = svm.crossValidation)
+    # Training phase
+    formula <- overallOptimalFormulaSVMSingleFrame 
+    svm.classifier <- svm(formula, data = trainingSet, kernel = "linear", type = "C-classification")
+    
+    svm.predict <- function(data) {
+        predict(svm.classifier, data)
+    }
+        
+    svm.hitsNum <- function(inputs, trueLabels) {
+        predictions <- svm.predict(inputs)
+        hits <- predictions == trueLabels
+        print(predictions)
+        hitsNum <- sum(hits)
+        hitsNum
+    }
+    
+    svm.crossValidation <- function(dataSet = trainingSet, K = 10) {
+        crossValidation(dataSet, classifierType = "svm", K)
+    }
+    
+    ## Returns a list representation of the object with methods and properties accessed through indexed keys
+    list(classifier = svm.classifier, predict = svm.predict, hitsNum = svm.hitsNum, crossValidation = svm.crossValidation)
 }  

@@ -16,13 +16,13 @@ trainingDataFolder <- paste(WORK_DIR, "Training", sep = "/")
 testDataFolder     <- paste(WORK_DIR, "Training/Test", sep = "/")
 
 emotionTitles <- c(
-	'Emotion 1. Anger'    , 
-	'Emotion 2. Contempt' , 
-	'Emotion 3. Disgust'  ,
-	'Emotion 4. Fear'     ,
-	'Emotion 5. Happiness',
-	'Emotion 6. Sadness'  ,
-	'Emotion 7. Surprise' 
+    'Emotion 1. Anger'    , 
+    'Emotion 2. Contempt' , 
+    'Emotion 3. Disgust'  ,
+    'Emotion 4. Fear'     ,
+    'Emotion 5. Happiness',
+    'Emotion 6. Sadness'  ,
+    'Emotion 7. Surprise' 
 )
 
 ## Folders by types of emotions
@@ -40,14 +40,14 @@ emotionFolders <- c(angerFolder, contemptFolder, disgustFolder, fearFolder, happ
 
 ## Emotional labels with codes
 emotionLabels <- list(
-	neutral  = 0, 
-	anger    = 1, 
-	contempt = 2, 
-	disgust  = 3, 
-	fear     = 4, 
-	happy    = 5, 
-	sadness  = 6, 
-	surprise = 7
+    neutral  = 0, 
+    anger    = 1, 
+    contempt = 2, 
+    disgust  = 3, 
+    fear     = 4, 
+    happy    = 5, 
+    sadness  = 6, 
+    surprise = 7
 )
 
 ## Abbreviated names for packages
