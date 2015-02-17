@@ -26,7 +26,7 @@ optimalFormulasSVM <- list(
 initSVMClassifier <- function(trainingSet) {
 	# Training phase
 	formula <- overallOptimalFormulaSVMSingleFrame 
-	svm.classifier <- svm(formula, data = trainingSet, kernel="linear", type="C-classification")
+	svm.classifier <- svm(formula, data = trainingSet, kernel = "linear", type = "C-classification")
 	
 	svm.predict <- function(data) {
 		predict(svm.classifier, data)
@@ -40,10 +40,10 @@ initSVMClassifier <- function(trainingSet) {
 		hitsNum
 	}
 	
-	svm.crossValidation <- function(dataSet=trainingSet, K=10) {
-		crossValidation(dataSet, classifierType="svm", K)
+	svm.crossValidation <- function(dataSet = trainingSet, K = 10) {
+		crossValidation(dataSet, classifierType = "svm", K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys
-	list(classifier=svm.classifier, predict=svm.predict, hitsNum = svm.hitsNum, crossValidation=svm.crossValidation)
+	list(classifier = svm.classifier, predict = svm.predict, hitsNum = svm.hitsNum, crossValidation = svm.crossValidation)
 }  

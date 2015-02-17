@@ -1,19 +1,19 @@
-## Working directory, where the project is located
-WORK_DIR     = "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/facial-expression-recognition"
+## Directory, where the project is located
+WORK_DIR     = "{PATH_TO_PROJECT}/FER Dataset/facial-expression-recognition"
 ## Directory for the data set, containing "CK" and "CK+" folders from the orinigal Cohn-Kanade data set 
-DATA_SET_DIR = "C:/Users/user/Documents/Docs_HP/TUM/Semester II/Data Mining Praktikum/FER Dataset/Data provided"
+DATA_SET_DIR = "{PATH_TO_PROJECT}/FER Dataset/Data provided"
 
 ## File system configuration variables
-imagesFolder          <- paste(DATA_SET_DIR, "CK+/Landmarks/cohn-kanade-images" , sep="/")
-emotionLabelsFolder   <- paste(DATA_SET_DIR, "CK+/Emotion_labels/Emotion"       , sep="/")
-landmarksFolder       <- paste(DATA_SET_DIR, "CK+/Landmarks/Landmarks"          , sep="/")
-AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"             , sep="/")
-faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"        , sep="/")
+imagesFolder          <- paste(DATA_SET_DIR, "CK+/Landmarks/cohn-kanade-images" , sep = "/")
+emotionLabelsFolder   <- paste(DATA_SET_DIR, "CK+/Emotion_labels/Emotion"       , sep = "/")
+landmarksFolder       <- paste(DATA_SET_DIR, "CK+/Landmarks/Landmarks"          , sep = "/")
+AULabelsFolder        <- paste(DATA_SET_DIR, "CK+/FACS_labels/FACS"             , sep = "/")
+faceExpressionsFolder <- paste(WORK_DIR,     "Facial Expressions Sorted"        , sep = "/")
 outputFolder          <- "Observations"
 
 # Training and test folders
-trainingDataFolder <- paste(WORK_DIR, "Training", sep="/")
-testDataFolder     <- paste(WORK_DIR, "Training/Test", sep="/")
+trainingDataFolder <- paste(WORK_DIR, "Training", sep = "/")
+testDataFolder     <- paste(WORK_DIR, "Training/Test", sep = "/")
 
 emotionTitles <- c(
 	'Emotion 1. Anger'    , 
@@ -26,13 +26,13 @@ emotionTitles <- c(
 )
 
 ## Folders by types of emotions
-angerFolder     = paste(faceExpressionsFolder, emotionTitles[1], sep="/")
-contemptFolder  = paste(faceExpressionsFolder, emotionTitles[2], sep="/")
-disgustFolder   = paste(faceExpressionsFolder, emotionTitles[3], sep="/")
-fearFolder      = paste(faceExpressionsFolder, emotionTitles[4], sep="/")
-happinessFolder = paste(faceExpressionsFolder, emotionTitles[5], sep="/")
-sadnessFolder   = paste(faceExpressionsFolder, emotionTitles[6], sep="/")
-surpriseFolder  = paste(faceExpressionsFolder, emotionTitles[7], sep="/")
+angerFolder     = paste(faceExpressionsFolder, emotionTitles[1], sep = "/")
+contemptFolder  = paste(faceExpressionsFolder, emotionTitles[2], sep = "/")
+disgustFolder   = paste(faceExpressionsFolder, emotionTitles[3], sep = "/")
+fearFolder      = paste(faceExpressionsFolder, emotionTitles[4], sep = "/")
+happinessFolder = paste(faceExpressionsFolder, emotionTitles[5], sep = "/")
+sadnessFolder   = paste(faceExpressionsFolder, emotionTitles[6], sep = "/")
+surpriseFolder  = paste(faceExpressionsFolder, emotionTitles[7], sep = "/")
 
 ## Emotional labels sorted in ascending emotional code order
 ## Usage example: emotionFolders[emotionLabels$happy]

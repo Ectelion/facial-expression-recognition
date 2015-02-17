@@ -57,7 +57,7 @@ testRuleClassifier <- function(inputs, trueLabels) {
 predictByTreeRule <- function(DTClassifier, data) {
 	classesProbs <- predict(DTClassifier, data)
 	maxProb <- max(classesProbs)
-	maxInd <- which(classesProbs==maxProb, arr.ind=TRUE)
+	maxInd <- which(classesProbs == maxProb, arr.ind = TRUE)
 	
 	if (maxInd == 3) {
 		for (i in length(classesProbs)) {

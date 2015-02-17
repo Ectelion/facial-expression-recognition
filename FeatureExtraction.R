@@ -10,24 +10,24 @@ source('GlobalVars.R')
 ## with distances for each of the corresponding rows in the sets
 
 euclideanDistances <- function(pointsSet1, pointsSet2) {
-	if (length(pointsSet1)!=length(pointsSet2)) {
-		stop("Invalid input: lengths of the vectors are not equal");
+	if (length(pointsSet1) != length(pointsSet2)) {
+		stop("Invalid input: lengths of the vectors are not equal")
 	}
-	xDist = pointsSet1[, 1]-pointsSet2[, 1]
-	yDist = pointsSet1[, 2]-pointsSet2[, 2]
-	eucDist = sqrt(xDist*xDist+yDist*yDist)
+	xDist = pointsSet1[, 1] - pointsSet2[, 1]
+	yDist = pointsSet1[, 2] - pointsSet2[, 2]
+	eucDist = sqrt(xDist * xDist + yDist * yDist)
 	eucDist
 }
 
 ## Copies all the files from a source to a target directory 
 
 copyAllFiles <- function(sourceDirectory, targetDirectory) {
-	files <- list.files(sourceDirectory, recursive = FALSE);
+	files <- list.files(sourceDirectory, recursive = FALSE)
 	lapply(files, 
 		function(filePath) {
-			path = paste(sourceDirectory, filePath, sep="")
-			file.copy(from=path, to=targetDirectory)
-    		}
+			path = paste(sourceDirectory, filePath, sep = "")
+			file.copy(from = path, to = targetDirectory)
+    	}
   	)
 }
 
@@ -36,11 +36,11 @@ copyAllFiles <- function(sourceDirectory, targetDirectory) {
 
 findLabeledEmotionFiles <- function(emotionCode, folder = emotionLabelsFolder) {
 	files <- list.files(folder, recursive = TRUE)
-	emotionLabelsFiles <- c(); 
+	emotionLabelsFiles <- c()
 	lapply(files, 
 		function(file) {
-			path = paste(folder, file, sep="/")
-			if (read.table(path)==emotionCode) {
+			path = paste(folder, file, sep = "/")
+			if (read.table(path) == emotionCode) {
 				emotionLabelsFiles <<- c(emotionLabelsFiles, path)
 			}
 		}
@@ -59,17 +59,17 @@ findAndCopyEmotionFiles <- function(emotionCode, targetDirectory = outputFolder)
 		function(path) {
 			sPos <- regexpr("S[[:digit:]][[:digit:]][[:digit:]]/", path)   
 			endPos <- regexpr("/[[:digit:]][[:digit:]][[:digit:]]/", path)
-			if (endPos!=-1) {
-				endPos <- endPos+4
+			if (endPos != -1) {
+				endPos <- endPos + 4
 				copyFromFolder <- substring(path, sPos, endPos)
-				copyFromFolder <- paste(landmarksFolder, copyFromFolder, sep="/")
-				copyToFolder   <- substring(path, sPos, endPos-4-1)
-				newFolderFullPath <- paste(targetDirectory, copyToFolder, sep="/")
+				copyFromFolder <- paste(landmarksFolder, copyFromFolder, sep = "/")
+				copyToFolder   <- substring(path, sPos, endPos - 4 - 1)
+				newFolderFullPath <- paste(targetDirectory, copyToFolder, sep = "/")
 				if (!file.exists(newFolderFullPath)) {
 					dir.create(newFolderFullPath)
 				}
 				copyAllFiles(copyFromFolder, newFolderFullPath)
-				paste(copyFromFolder, newFolderFullPath, sep="=>")
+				paste(copyFromFolder, newFolderFullPath, sep = "=>")
 			} else {
 				NA
 			}
@@ -98,10 +98,10 @@ preprocessEmotionFilePaths <- function(inputFolderPath = happinessFolder) {
 	lapply(folders, 
 		function(folder) { 
 			files <- list.files(folder, recursive = FALSE);
-			firstFile <- paste(folder, files[1], sep="/"); 
-			lastFile <- paste(folder, files[length(files)], sep="/"); 
-			file.copy(from=firstFile, to=paste(folder, "n.dat", sep="/"));
-			file.copy(from=lastFile,  to=paste(folder, "em.dat", sep="/"));
+			firstFile <- paste(folder, files[1], sep = "/"); 
+			lastFile <- paste(folder, files[length(files)], sep = "/"); 
+			file.copy(from = firstFile, to = paste(folder, "n.dat", sep = "/"));
+			file.copy(from = lastFile,  to = paste(folder, "em.dat", sep = "/"));
 		}
 	)
 }
@@ -113,32 +113,32 @@ createNormalizedLandmarkFiles <- function(inputFolderPath = happinessFolder) {
 	folders <- list.dirs(inputFolderPath, recursive = FALSE)
 	lapply(folders, 
 		  function(folder) { 
-		  	neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
-		  	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+		  	neutralFace   <- read.table(paste(folder,"n.dat", sep = "/"))
+		  	emotionalFace <- read.table(paste(folder,"em.dat", sep = "/"))
 		  	distances     <- emotionalFace - neutralFace
 		  	normalizedDistances <- normalizeMatrix(distances)
-		  	destinationPath = paste(folder, "normalized_change_xy.dat", sep="/")
+		  	destinationPath = paste(folder, "normalized_change_xy.dat", sep = "/")
 		  	file.create(destinationPath, overwrite=TRUE)
-		  	write.table(normalizedDistances, file=destinationPath, row.names=FALSE, col.names=FALSE) # ncolumns=2
+		  	write.table(normalizedDistances, file = destinationPath, row.names = FALSE, col.names = FALSE)  # ncolumns=2
 		  	paste(destinationPath, "created")
 		  }
 	)
 }
 
-## Returns labeled training data with normalized landmark displacements as features
+## Returns: labeled training data with normalized landmark displacements as features
 
-loadData <- function(inputFolderPath=faceExpressionsFolder) {
+loadData <- function(inputFolderPath = faceExpressionsFolder) {
 	emotionCode <- 1
 	trainingData <- data.frame()
 	labelsColumn <- data.frame()
 	
 	lapply(emotionTitles, 
 		function(emotionTitle) {
-			emotionFolder <- paste(inputFolderPath, emotionTitle, sep="/")
+			emotionFolder <- paste(inputFolderPath, emotionTitle, sep = "/")
 			folders <- list.dirs(emotionFolder, recursive = FALSE)
 		  	cnt <- 0
 		  	for (folder in folders) { 
-		  	  	normalizedDistances <- read.table(paste(folder,"normalized_change_xy.dat", sep="/"))
+		  	  	normalizedDistances <- read.table(paste(folder,"normalized_change_xy.dat", sep = "/"))
 		  	  	features <- c(normalizedDistances[, 1], normalizedDistances[, 2])  	  	
 		  	  	trainingData <<- rbind.data.frame(trainingData, features)
 		  	  	labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
@@ -147,16 +147,16 @@ loadData <- function(inputFolderPath=faceExpressionsFolder) {
 		}
 	)
 	trainingData <- cbind.data.frame(trainingData, labelsColumn)
-	colnames(trainingData) <- c(paste("X", 1:136, sep=""), "emotion")
+	colnames(trainingData) <- c(paste("X", 1:136, sep = ""), "emotion")
 	rownames(trainingData) <- NULL
 	trainingData
 }
 
-## Returns labeled training data with peak emotions as features. 
-## * loadNeutral param - using this, neutral emotionals may be optionally included  
-## * balanceLabels - balances the number of neutral faces in the data to avoid biased training 
+## Returns: labeled training data with peak emotions as features. 
+## @loadNeutral - using this, neutral emotions may be optionally included.  
+## @balanceLabels - balances the number of neutral faces in the data to avoid biased training. 
 
-loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral = FALSE, balanceLabels = TRUE) {
+loadPeakEmotions <- function(inputFolderPath = faceExpressionsFolder, loadNeutral = FALSE, balanceLabels = TRUE) {
 	emotionCode <- 1
 	trainingData <- data.frame()
 	labelsColumn <- data.frame()
@@ -164,11 +164,11 @@ loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral 
     
 	lapply(emotionTitles, 
 		function(emotionTitle) {
-			emotionFolder <- paste(inputFolderPath, emotionTitle, sep="/")
+			emotionFolder <- paste(inputFolderPath, emotionTitle, sep = "/")
 			folders <- list.dirs(emotionFolder, recursive = FALSE)
 		  
             for (folder in folders) { 
-		  	  	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+		  	  	emotionalFace <- read.table(paste(folder, "em.dat", sep = "/"))
 		  	  	emotionalFace <- normalizeMatrix(emotionalFace)
                 emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
 		  	  	trainingData <<- rbind.data.frame(trainingData, emotionalFeatures)
@@ -176,7 +176,7 @@ loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral 
                 
                 if (loadNeutral) {
                     if (!balanceLabels || cnt%%7 == 0) {
-                        neutralFace <- read.table(paste(folder,"n.dat", sep="/"))
+                        neutralFace <- read.table(paste(folder, "n.dat", sep = "/"))
                         neutralFace <- normalizeMatrix(neutralFace)
                         neutralFeatures <- c(neutralFace[, 1], neutralFace[, 2])
                         trainingData <<- rbind.data.frame(trainingData, neutralFeatures)
@@ -189,7 +189,7 @@ loadPeakEmotions <- function(inputFolderPath=faceExpressionsFolder, loadNeutral 
 		}
 	)
 	trainingData <- cbind.data.frame(trainingData, labelsColumn)
-	colnames(trainingData) <- c(paste("X", 1:136, sep=""), "emotion")
+	colnames(trainingData) <- c(paste("X", 1:136, sep = ""), "emotion")
 	rownames(trainingData) <- NULL
 	trainingData
 }
@@ -204,7 +204,7 @@ normalizeMatrix <- function(matrix) {
 
 normalizeVector <- function(vector) {
 	s <- sqrt(var(vector))
-	normalizedVector <- (vector-mean(vector)) / s
+	normalizedVector <- (vector - mean(vector)) / s
 	normalizedVector
 }
 
@@ -214,17 +214,17 @@ plotLandmarkChangesSummary <- function() {
 	res <- analyzeFaceExpressions()
 	Landmark_ID <- 1:length(res)
 	Average_Change <- res
-	plot(Landmark_ID, Average_Change, col=ifelse(Average_Change>=9, "red", "black"), lwd=4, type='p')
+	plot(Landmark_ID, Average_Change, col=ifelse(Average_Change >= 9, "red", "black"), lwd = 4, type = 'p')
 }
 
 ## Visualizes face change, plotting the peak and neutral emotions 
 
 plotEntry <- function(folder) {
-	neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
-	emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+	neutralFace   <- read.table(paste(folder,"n.dat", sep = "/"))
+	emotionalFace <- read.table(paste(folder,"em.dat", sep = "/"))
 	plot(neutralFace[, 1], neutralFace[, 2])
 	plot(emotionalFace[, 1], emotionalFace[, 2])
-	plot(AU_ID, Average_Change, col=ifelse(Average_Change>=9, "orange", "black"), lwd=4, type='p')
+	plot(AU_ID, Average_Change, col = ifelse(Average_Change >= 9, "orange", "black"), lwd = 4, type = 'p')
 }
 
 relevantDTFeatures <- function(dataSet) {
@@ -247,13 +247,13 @@ analyzeFaceExpressions <- function(inputFolderPath = happinessFolder) {
 	     
 	lapply(landmarksFolders, 
 		function(folder) {
-			neutralFace   <- read.table(paste(folder,"n.dat", sep="/"))
-			emotionalFace <- read.table(paste(folder,"em.dat", sep="/"))
+			neutralFace   <- read.table(paste(folder, "n.dat", sep = "/"))
+			emotionalFace <- read.table(paste(folder, "em.dat", sep = "/"))
 			distances     <- euclideanDistances(neutralFace, emotionalFace)
-			if (cnt==1) {
-				sum             <<- distances
-				neutralSum      <<- neutralFace
-				emotionalSum    <<- emotionalFace
+			if (cnt == 1) {
+				sum          <<- distances
+				neutralSum   <<- neutralFace
+				emotionalSum <<- emotionalFace
 			} else {
 				sum          <<- sum + distances
 				neutralSum   <<- neutralSum + neutralFace
@@ -262,25 +262,24 @@ analyzeFaceExpressions <- function(inputFolderPath = happinessFolder) {
 			cnt <<- cnt + 1
 			if (cnt == 100) {
 				cnt <<- 1
-				
 			}
 		}
 	)
 	## Obtain the average change of landmarks across all faces
-	neutralAvg     <- neutralSum / cnt
-	emotionalAvg   <- emotionalSum / cnt  
-	
+	neutralAvg   <- neutralSum / cnt
+	emotionalAvg <- emotionalSum / cnt  
+    
 	## Constructing Face maps - visualization characterizing average changes of landmarks across all faces 
 	dataToPlot <- neutralAvg
 	dataToPlot <- rbind(dataToPlot, emotionalAvg)
 	len <- nrow(dataToPlot)
-	dataToPlot <- cbind(dataToPlot, rowId=1:len)
-	plot(dataToPlot[, 1], -dataToPlot[, 2], col=ifelse(dataToPlot$rowId > len/2, "red", "black"), lwd=4, type='p')
+	dataToPlot <- cbind(dataToPlot, rowId = 1:len)
+	plot(dataToPlot[, 1], -dataToPlot[, 2], col=ifelse(dataToPlot$rowId > len/2, "red", "black"), lwd = 4, type = 'p')
   
 	## Visualizations:
 	## plot(neutralAvg[, 1], neutralAvg[, 2])
 	## plot(emotionalAvg[, 1], emotionalAvg[, 2])
-	## plot(AU_ID, Average_Change, col=ifelse(Average_Change>=9, "orange", "black"), lwd=4, type='p')
+	## plot(AU_ID, Average_Change, col = ifelse(Average_Change >= 9, "orange", "black"), lwd = 4, type = 'p')
   
 	## Obtain the average change of landmarks across all faces
 	totalAvg <- sum / cnt
@@ -293,13 +292,13 @@ findUnlabeledData <- function() {
 	f_lb <- list.files(emotionLabelsFolder)
 	folders_lb <- c()
 	lapply(f_lb, function(folder) {
-		subjF <- paste(emotionLabelsFolder, folder, sep="/")
+		subjF <- paste(emotionLabelsFolder, folder, sep = "/")
 		f <- list.files(subjF)
 		for (imageFolder in f) { 
-			folders_lb <<- c(folders_lb, paste(folder, imageFolder, sep="/"))
+			folders_lb <<- c(folders_lb, paste(folder, imageFolder, sep = "/"))
 		}
 	})
-	labeled <- list.files(emotionLabelsFolder, recursive=T)
+	labeled <- list.files(emotionLabelsFolder, recursive = T)
 	labeled_sub <- substring(labeled, 1, 8)
 	unlabeled <- setdiff(folders_lb, labeled_sub)
 	unlabeled
@@ -307,19 +306,19 @@ findUnlabeledData <- function() {
 
 ## Find and copies all unlabeled image sequences to the target directory
 
-copyUnlabeledData <- function(targetDirectory="Unlabeled data") {
+copyUnlabeledData <- function(targetDirectory = "Unlabeled data") {
 	if (!file.exists(targetDirectory)) {
 		dir.create(targetDirectory)
 	}
 	folders <- findUnlabeledData()
 	lapply(folders, 
 		function(folderPath) {
-			fromPath   <- paste(imagesFolder, folderPath, sep="/")
-			targetPath <- paste(targetDirectory, folderPath, sep="/")
+			fromPath   <- paste(imagesFolder, folderPath, sep = "/")
+			targetPath <- paste(targetDirectory, folderPath, sep = "/")
 			if (!file.exists(targetPath)) {
 				dir.create(targetPath)
 			}
-			file.copy(from=fromPath, to=targetDirectory)
+			file.copy(from = fromPath, to = targetDirectory)
 		}
 	)
 }

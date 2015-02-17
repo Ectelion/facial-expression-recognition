@@ -7,22 +7,22 @@ source("SVMClassifier.R")
 ## functionality for training, prediction, cross validation, etc.
 ## @parameter "type": {"decision_tree", "random_forest", binary", "svm", "neural_network", "naive_bayes"} 
 
-classifier <- function(data, type="decision_tree") {	
+classifier <- function(data, type = "decision_tree") {	
 	classifier <- NA
 	
-	if (type=="decision_tree") {
+	if (type == "decision_tree") {
 		classifier <- initTree(data)
 	} 
-	else if (type=="random_forest") {
+	else if (type == "random_forest") {
 		classifier <- initForest(data)
 	}
-    else if (type=="random_forest2") {
+    else if (type == "random_forest2") {
 		classifier <- initForest2(data)
 	}
-	else if (type=="binary") {
+	else if (type == "binary") {
 		classifier <- initBinClassifier(data)
 	}
-	else if (type=="svm") {
+	else if (type == "svm") {
 		classifier <- initSVMClassifier(data)
 	}
 	
@@ -39,25 +39,25 @@ classifier <- function(data, type="decision_tree") {
 	}
 	
 	# Static method, performing a K-foldes cross-validation  
-	crossValidation <- function(dataSet=data, K=10) {
-		crossValidation(dataSet, classifierType=type, K)
+	crossValidation <- function(dataSet = data, K = 10) {
+		crossValidation(dataSet, classifierType = type, K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys
-	list(classifier=classifier, predict=predict, crossValidation=crossValidation, test=test, hitsNum=hitsNum)
+	list(classifier = classifier, predict = predict, crossValidation = crossValidation, test = test, hitsNum = hitsNum)
 }  
 
-crossValidation <- function(dataSet, classifierType="decision_tree", K = 10) {
+crossValidation <- function(dataSet, classifierType = "decision_tree", K = 10) {
 	trueLabelsColumn <- ncol(dataSet)
 	classesNum <- length(unique(dataSet[, trueLabelsColumn]))  
 	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
+	folds    <- cvFolds(nrow(dataSet), K = K)
 	totalCm  <- matrix(0, classesNum, classesNum)
 	
 	for(i in 1:K) {
 		train <- dataSet[folds$subsets[folds$which != i], ]
 		validation <- dataSet[folds$subsets[folds$which == i], ]
-		classifier <- classifier(train, type=classifierType)
+		classifier <- classifier(train, type = classifierType)
 		pred <- classifier$predict(validation)
 		pred <- round(as.numeric(pred))
 		validation <- c(validation[, ncol(dataSet)]) 

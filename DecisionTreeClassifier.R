@@ -8,7 +8,7 @@ initTree <- function(trainingSet) {
 	tree <- fitDTClassifier(trainingSet)
 	
 	tree.predict <- function(data) {
-		predict(tree, data, type="class")
+		predict(tree, data, type = "class")
 	}
 		
 	tree.hitsNum <- function(inputs, trueLabels) {
@@ -24,7 +24,7 @@ initTree <- function(trainingSet) {
 			
 			for (labelProb in probs) {
 				if (labelProb > max) {
-					max   <- labelProb
+					max <- labelProb
 					maxLabelId <- labelId
 				}
 				labelId <- labelId + 1

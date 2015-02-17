@@ -26,7 +26,7 @@ optimalDiffFormulas <- list(
 ## Creates binary classifier object, consisted of binary classifiers for 
 ## each emotion and methods for prediction, cross validation, etc.
 
-initBinClassifier <- function(trainingSet=loadData()) {
+initBinClassifier <- function(trainingSet = loadData()) {
 	# Training phase
 	binTrees <- list()
 	diffClass <- initDifferentiatingClassifier(trainingSet)
@@ -35,9 +35,9 @@ initBinClassifier <- function(trainingSet=loadData()) {
 	for(em in 1:7) {
 		train <- oneVsAll(trainingSet, em)
 		formula <- optimalBinFormulas[[em]]
-		tree <- rpart(formula, data=train) # control=rpart.control(cp=0.006147541)) 
+		tree <- rpart(formula, data = train)  # control=rpart.control(cp=0.006147541)) 
 		
-		if (em==1) {
+		if (em == 1) {
 			binTrees <- list(tree)
 		} else {
 			binTrees <- c(binTrees, list(tree))
@@ -59,9 +59,9 @@ initBinClassifier <- function(trainingSet=loadData()) {
 		classes <- weights * classes
 		
 		# Identifying the elected winner
-		max        <- -1
-		winnerId   <-  0
-		voteId     <-  1  
+		max      <- -1
+		winnerId <-  0
+		voteId   <-  1  
 		
 		for (prob in classes) {
 			if (prob > max) {
@@ -92,16 +92,15 @@ initBinClassifier <- function(trainingSet=loadData()) {
 		# Identifying the most probable classes
           n <- length(classProbs)
 		sortedProbs <- sort(classProbs, partial=n)
-		max1    <- sortedProbs[n]
-		max2    <- sortedProbs[n-1]
-		
+		max1 <- sortedProbs[n]
+		max2 <- sortedProbs[n-1]
 		
 		# Handling the case when the two top indices are a tie
 		# or when the second top element has a tie
-		max1Ind <- max(which(classProbs==max1))
-		max2Ind <- min(which(classProbs==max2))
+		max1Ind <- max(which(classProbs == max1))
+		max2Ind <- min(which(classProbs == max2))
 		
-		if (max1-max2 >= 0.5) {
+		if (max1 - max2 >= 0.5) {
 			# If the top probability is high enough, return the result
 			res <- max1Ind
 		} else {
@@ -136,17 +135,17 @@ initBinClassifier <- function(trainingSet=loadData()) {
 	
 	## Performs cross validation on the specified testSet
 	
-	binTrees.crossValidation <- function(testSet=trainingSet, K=10) {
+	binTrees.crossValidation <- function(testSet = trainingSet, K = 10) {
 		crossValidationBin(testSet, K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys
-	list(classifier=binTrees, predict=binTrees.predict, test=binTrees.predictOne, hitsNum = binTrees.hitsNum, crossValidation=binTrees.crossValidation)
+	list(classifier = binTrees, predict = binTrees.predict, test = binTrees.predictOne, hitsNum = binTrees.hitsNum, crossValidation = binTrees.crossValidation)
 }
 
 ## Differentiating classifier object. Caches the results across calls
 
-initDifferentiatingClassifier <- function(dataSet=loadData()) {
+initDifferentiatingClassifier <- function(dataSet = loadData()) {
 	differentiatingClassifiers <- list() 
 	
 	fit <- function(emotionIdX, emotionIdY) {
@@ -164,14 +163,14 @@ initDifferentiatingClassifier <- function(dataSet=loadData()) {
 			emotionIdY <- emotionIdX
 			emotionIdX <- tmp
 		}
-		key <- paste(emotionIdX, emotionIdY, sep="-")
+		key <- paste(emotionIdX, emotionIdY, sep = "-")
 		#if (key %in% names(differentiatingClassifiers) ) {
 			# Retrieve and return cached entry
 			#differentiatingClassifiers[key]	
 		#} else {
 			
-			emX <- dataSet[dataSet[,"emotion"]==emotionIdX, ]
-			emY <- dataSet[dataSet[,"emotion"]==emotionIdY, ]
+			emX <- dataSet[dataSet[,"emotion"] == emotionIdX, ]
+			emY <- dataSet[dataSet[,"emotion"] == emotionIdY, ]
 			differentiatorDt <- rbind(emX, emY) 
 			if (key %in% names(optimalDiffFormulas)) {
 				formula <- optimalDiffFormulas[[key]]
@@ -180,28 +179,28 @@ initDifferentiatingClassifier <- function(dataSet=loadData()) {
 			} else {
 				formula <- emotion ~ X66+X76+X91+X117+X119+X121+X128
 			}
-			fitDiff <- rpart(formula, data=data.frame(differentiatorDt), method="class", control=rpart.control(minsplit=1, cp= 0.006147541))
+			fitDiff <- rpart(formula, data = data.frame(differentiatorDt), method = "class", control = rpart.control(minsplit = 1, cp = 0.0061475))
 			#differentiatingClassifiers[key] <<- fitDiff
 			fitDiff
 		#}
 	}
 	
-	list(fit=fit)
+	list(fit = fit)
 }
 
 ## Transforms the dataset to a binary for the specified class 
 
 oneVsAll <- function(dataSet, binClass) {
 	oneVsAll <- dataSet
-	oneVsAll[oneVsAll[,"emotion"]!=binClass, "emotion"] <- FALSE
-	oneVsAll[oneVsAll[,"emotion"]!=FALSE, "emotion"] <- TRUE
+	oneVsAll[oneVsAll[,"emotion"] != binClass, "emotion"] <- FALSE
+	oneVsAll[oneVsAll[,"emotion"] != FALSE, "emotion"] <- TRUE
 	oneVsAll
 }		
 
 ## Creates a binary classifier for a specified emotion. Based on rpart 
 ## Decision Tree classificator
 
-fitBinaryClassifier <- function(dataSet=loadData(), emotionId) {
+fitBinaryClassifier <- function(dataSet = loadData(), emotionId) {
 	labels <- dataSet[, "emotion"]
 	labelsBin <- labels == emotionId
 	dataSet[, "emotion"] <- labelsBin
@@ -209,12 +208,11 @@ fitBinaryClassifier <- function(dataSet=loadData(), emotionId) {
 	fit			
 }
 
-
 # Experimental hybrid classifier with differentiating trees used to deal with confusions
 
 expC <- function(dataSet, K = 10) {
 	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
+	folds    <- cvFolds(nrow(dataSet), K = K)
 	totalCm  <- matrix(rep(0, 49), 7, 7)
 	for(i in 1:K) {
 		train <- dataSet[folds$subsets[folds$which != i], ]
@@ -237,10 +235,10 @@ expC <- function(dataSet, K = 10) {
 			
 			# Handling the case when the two top indices are a tie
 			# or when the second top element has a tie
-			max1Ind <- max(which(classProbs==max1))
-			max2Ind <- min(which(classProbs==max2))
+			max1Ind <- max(which(classProbs == max1))
+			max2Ind <- min(which(classProbs == max2))
 			
-			if (max1-max2 >= 0.5) {
+			if (max1 - max2 >= 0.5) {
 				# If the top probability is high enough, return the result
 				ans[i] <- max1Ind
 				
@@ -249,14 +247,14 @@ expC <- function(dataSet, K = 10) {
 				print(paste(max1Ind, max2Ind, max1, max2))
 				print(sortedProbs)
 				fitDiff <- diffClass$fit(max1Ind, max2Ind)
-				predDiff <- predict(fitDiff, dt[i,]) #, type="class")
+				predDiff <- predict(fitDiff, dt[i, ]) #, type="class")
 				#print(pred)
 				maxId <- which.max(predDiff)
 				ans[i] <- as.numeric(dimnames(predDiff)[[2]][maxId])
 			}
 		}
 		
-		acc <- sum(ans==validation) / length(validation)
+		acc <- sum(ans == validation) / length(validation)
 		accuracy <- rbind(accuracy, acc)
 	}
 	accuracy <- mean(accuracy)
