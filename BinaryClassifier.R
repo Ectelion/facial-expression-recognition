@@ -23,7 +23,7 @@ optimalDiffFormulas <- list(
 	, "2-6" = emotion ~ X23+X30+X57
 ) 
 
-## Creates binary classificator object, consisted of binary classifitarors for 
+## Creates binary classifier object, consisted of binary classifiers for 
 ## each emotion and methods for prediction, cross validation, etc.
 
 initBinClassifier <- function(trainingSet=loadData()) {
@@ -136,7 +136,7 @@ initBinClassifier <- function(trainingSet=loadData()) {
 	
 	## Performs cross validation on the specified testSet
 	
-	binTrees.crossValidation <- function(testSet, K=10) {
+	binTrees.crossValidation <- function(testSet=trainingSet, K=10) {
 		crossValidationBin(testSet, K)
 	}
 	
@@ -209,72 +209,6 @@ fitBinaryClassifier <- function(dataSet=loadData(), emotionId) {
 	fit			
 }
 
-## Estimates cross validation of the Binary classifier for the specified data set, performing splits into
-## K subsets. Returns mean accuracy of cross validations  
-
-crossValidationBin <- function(dataSet, K = 10) {
-	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
-	totalCm  <- matrix(rep(0, 4), 2, 2)
-	for(i in 1:K) {
-		train <- dataSet[folds$subsets[folds$which != i], ]
-		validation <- dataSet[folds$subsets[folds$which == i], ]
-		classifier <- initBinClassifier(train)
-		pred <- classifier$predict(validation)
-		validation <- c(validation[, ncol(dataSet)]) 
-		eq <- as.vector(pred) == as.vector(validation)
-		acc <- sum(eq)/length(eq)
-		accuracy <- rbind(accuracy, acc)
-	}
-	accuracy <- mean(accuracy)
-	print(accuracy)
-	accuracy
-}
-
-## Estimates cross validation of the Binary classifier for the specified data set, performing splits into
-## K subsets. Returns mean accuracy of cross validations  
-
-crossValidationBinSVM <- function(dataSet, K = 10) {
-	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
-	totalCm  <- matrix(rep(0, 4), 2, 2)
-	for(i in 1:K) {
-		train <- dataSet[folds$subsets[folds$which != i], ]
-		validation <- dataSet[folds$subsets[folds$which == i], ]
-		classifier <- initSVMClassifier(train) 
-		pred <- classifier$predict(validation)
-		pred <- as.vector(pred)
-		validation <- c(validation[, ncol(dataSet)]) 
-		eq <- as.vector(pred) == as.vector(validation)
-		acc <- sum(eq)/length(eq)
-		accuracy <- rbind(accuracy, acc)
-	}
-	accuracy <- mean(accuracy)
-	print(accuracy)
-	accuracy
-}
-
-## Estimates cross validation of the Binary classifier (based on Decision Trees) for the specified data set, performing splits into
-## K subsets. Returns mean accuracy of cross validations  
-
-crossValidationBin2 <- function(dataSet, K = 10) {
-	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
-	totalCm  <- matrix(rep(0, 4), 2, 2)
-	for(i in 1:K) {
-		train <- dataSet[folds$subsets[folds$which != i], ]
-		validation <- dataSet[folds$subsets[folds$which == i], ]
-		classifier <- fitDTClassifier(train)
-		pred <- predict(classifier, validation, type="class")
-		validation <- c(validation[, ncol(dataSet)]) 
-		eq <- as.vector(pred) == as.vector(validation)
-		acc <- sum(eq)/length(eq)
-		accuracy <- rbind(accuracy, acc)
-	}
-	accuracy <- mean(accuracy)
-	print(accuracy)
-	accuracy
-}
 
 # Experimental hybrid classifier with differentiating trees used to deal with confusions
 

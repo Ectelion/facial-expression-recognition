@@ -41,42 +41,9 @@ initSVMClassifier <- function(trainingSet) {
 	}
 	
 	svm.crossValidation <- function(dataSet=trainingSet, K=10) {
-		crossValidationSVM(dataSet, K)
+		crossValidation(dataSet, classifierType="svm", K)
 	}
 	
 	## Returns a list representation of the object with methods and properties accessed through indexed keys
 	list(classifier=svm.classifier, predict=svm.predict, hitsNum = svm.hitsNum, crossValidation=svm.crossValidation)
 }  
-
-
-## Estimates cross validation of the SVM based classifier for 
-## the specified data set, performing splits into K subsets. 
-## Returns mean accuracy cross validation  
-
-crossValidationSVM2 <- function(dataSet, K = 10) {
-	trueLabelsColumn <- ncol(dataSet)
-	classesNum <- length(unique(dataSet[, trueLabelsColumn]))  
-	accuracy <- numeric(0)
-	folds    <- cvFolds(nrow(dataSet), K=K)
-	totalCm  <- matrix(0, classesNum, classesNum)
-	
-	for(i in 1:K) {
-		train <- dataSet[folds$subsets[folds$which != i], ]
-		validation <- dataSet[folds$subsets[folds$which == i], ]
-		classifier <- initSVMClassifier(train)
-		pred <- classifier$predict(validation)
-		pred <- round(as.numeric(pred))
-		validation <- c(validation[, ncol(dataSet)]) 
-		## Adding one dumb prediction per class. They will be extracted from the final result 
-		validation <- c(validation, c(1:classesNum))
-		pred <-  c(pred, c(1:classesNum))
-		cm   <- table(pred, validation)
-		acc  <- (sum(diag(cm)) - classesNum) / (sum(cm) - classesNum)
-		totalCm <- totalCm + cm
-		accuracy <- rbind(accuracy, acc)
-	}
-	print (totalCm)
-	accuracy <- mean(accuracy)
-	print(accuracy)
-	accuracy
-}
