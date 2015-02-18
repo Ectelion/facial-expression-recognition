@@ -14,18 +14,21 @@ optimalFormulasSVM <- list(
     emotion ~ X40+X43+X48+X92+X111+X127,
     emotion ~ X87+X93+X124+X126,
     emotion ~ X23+X25+X49+X54+X57+X67+X91+X104+X106+X118+X125+X135+X136,
-    emotion ~ X37+X104+X129+X33+X55+X89+X91+X111+X117+X121+X127+X128+X130 , #overallOptimalFormulaSVM, #X40 || X122 || X130(?) 
+    emotion ~ X37+X104+X129+X33+X55+X89+X91+X111+X117+X121+X127+X128+X130,  # overallOptimalFormulaSVM, #X40 || X122 || X130(?) 
     emotion ~ X26+X66+X101+X115+X117+X120+X132,
     emotion ~ X48+X50+X90+X117+X136,
     emotion ~ X19+X76+X87+X102+X125+X133
 )
 
-## Creates SVM based classificator object, containing 
-## methods for prediction, cross validation, etc.
+## Creates SVM based classifier object.
+## Includes methods for prediction, cross validation, etc.
+## @formula parameter is used to specify labels & features. 
 
-initSVMClassifier <- function(trainingSet) {
+initSVMClassifier <- function(trainingSet, formula = NULL) {
     # Training phase
-    formula <- overallOptimalFormulaSVMSingleFrame 
+    if (is.null(formula)) {
+        formula <- overallOptimalFormulaSVMDisplacement  # overallOptimalFormulaSVMSingleFrame
+    }
     svm.classifier <- svm(formula, data = trainingSet, kernel = "linear", type = "C-classification")
     
     svm.predict <- function(data) {

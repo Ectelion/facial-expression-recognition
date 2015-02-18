@@ -4,14 +4,13 @@ defaultGPFormula = emotion ~ .
 
 ## Creates classifier based on Gaussian Processes.
 ## Includes methods for prediction, cross validation, etc.
-## @formula parameter is used to specify labels & features 
+## @formula parameter is used to specify labels & features.
 
 initGPClassifier <- function(trainingSet, formula = defaultGPFormula) {
+    # Training phase
     if (is.null(formula)) {
         formula <- defaultGPFormula
     }
-    
-    # Training phase
     gp.classifier <- gausspr(defaultGPFormula, data = trainingSet, type = "classification", fit = TRUE, cross = 5, tol = 0.0001)
     
     gp.predict <- function(data) {

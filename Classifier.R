@@ -3,27 +3,31 @@ source("BinaryClassifier.R")
 source("DecisionTreeClassifier.R")
 source("SVMClassifier.R")
 
-## Specifies a common interface for a variety of classificator objects, containing 
+## Specifies a common interface for a variety of classifier objects, containing 
 ## functionality for training, prediction, cross validation, etc.
-## @parameter "type": {"decision_tree", "random_forest", binary", "svm", "neural_network", "naive_bayes"} 
+## @type of classifier: {"decision_tree", "random_forest", binary", "svm", "neural_network", "gp", "naive_bayes"} 
+## @formula parameter is used to specify labels & features 
 
-classifier <- function(data, type = "decision_tree") {	
+classifier <- function(data, type = "decision_tree", formula = NULL) {	
     classifier <- NA
     
     if (type == "decision_tree") {
-        classifier <- initTree(data)
+        classifier <- initTree(data, formula)
     } 
     else if (type == "random_forest") {
-        classifier <- initForest(data)
+        classifier <- initForest(data, formula)
     }
     else if (type == "random_forest2") {
-        classifier <- initForest2(data)
+        classifier <- initForest2(data, formula)
     }
     else if (type == "binary") {
         classifier <- initBinClassifier(data)
     }
     else if (type == "svm") {
-        classifier <- initSVMClassifier(data)
+        classifier <- initSVMClassifier(data, formula)
+    } 
+    else if (type == "gp") {
+        classifier <- initGPClassifier(data, formula)
     }
     
     predict <- function(entry) {
@@ -46,6 +50,10 @@ classifier <- function(data, type = "decision_tree") {
     ## Returns a list representation of the object with methods and properties accessed through indexed keys
     list(classifier = classifier, predict = predict, crossValidation = crossValidation, test = test, hitsNum = hitsNum)
 }  
+
+## Estimates performance of a classifier object of certain @classifierType for the
+## specified @dataset based on cross validation, performing splits into @K subsets. 
+## Returns: mean accuracy of the cross validation
 
 crossValidation <- function(dataSet, classifierType = "decision_tree", K = 10) {
     trueLabelsColumn <- ncol(dataSet)

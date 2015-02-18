@@ -1,16 +1,16 @@
 library(randomForest)
 
-## Custom implementation of a simple Random Forest, based on 
-## the rpart package's decision tree
+## Custom implementation of a simple Random Forest, based on rpart package's decision tree
+## @formula parameter is used to specify labels & features 
 
-initForest2 <- function(trainingSet, treesNum = 10) {
+initForest2 <- function(trainingSet, formula = NULL, treesNum = 10) {
     # Training phase
     folds  <- cvFolds(nrow(trainingSet), K = treesNum)
     forest <- list()
     
     for(i in 1:treesNum) {
         train <- trainingSet[folds$subsets[folds$which != i], ]
-        tree <- fitDTClassifier(train) # rpart(emotion ~ ., method="class", data=train, control=rpart.control(minsplit=1, cp=0.006147)) 
+        tree <- fitDTClassifier(train, formula) # rpart(emotion ~ ., method="class", data=train, control=rpart.control(minsplit=1, cp=0.006147)) 
         if (i == 1) {
             forest <- list(tree)
         } else {
@@ -65,11 +65,14 @@ initForest2 <- function(trainingSet, treesNum = 10) {
     list(classifier = forest, predict = forest.predict, hitsNum = forest.hitsNum, crossValidation = forest.crossValidation)
 }  
 
-## Random Forest implementation based on the randomForest package
+## Random Forest implementation based on the randomForest package.
+## @formula parameter is used to specify labels & features
 
-initForest <- function(trainingSet, treesNum = 100) {
+initForest <- function(trainingSet, formula = NULL, treesNum = 100) {
     # Training phase
-    formula <- emotion ~ . #X1+X11+X18+X43+X52+X87+X89+X91+X92+X101+X102+X117+X118+X120+X123+X125
+    if (is.null(formula)) {
+        formula <- emotion ~ . #X1+X11+X18+X43+X52+X87+X89+X91+X92+X101+X102+X117+X118+X120+X123+X125
+    }
     forest <- randomForest(formula, data = dataSet, importance = TRUE, proximity = TRUE, ntree = treesNum) # maxnodes = 15, nodesize = 10)
     
     forest.predict <- function(entry) {
