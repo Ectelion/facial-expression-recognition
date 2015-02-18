@@ -170,7 +170,7 @@ loadPeakEmotions <- function(inputFolderPath = faceExpressionsFolder, loadNeutra
             for (folder in folders) { 
                     emotionalFace <- read.table(paste(folder, "em.dat", sep = "/"))
                     emotionalFace <- normalizeMatrix(emotionalFace)
-                emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
+                    emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
                     trainingData <<- rbind.data.frame(trainingData, emotionalFeatures)
                     labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
                 
