@@ -6,7 +6,7 @@ defaultGPFormula = emotion ~ .
 ## Includes methods for prediction, cross validation, etc.
 ## @formula parameter is used to specify labels & features.
 
-initGPClassifier <- function(trainingSet, formula = defaultGPFormula) {
+initGPClassifier <- function(trainingSet, formula = NULL) {
     # Training phase
     if (is.null(formula)) {
         formula <- defaultGPFormula
