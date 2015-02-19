@@ -17,5 +17,6 @@ The solution consists of versatile classifiers including Decision Tree, Random F
 
 Performance results, estimated by cross validation tests: 
 
-* Multi-class Support Vector Machines with linear kernel: 96.5%
+* Multi-class Support Vector Machines (radial kernel, kernlab): 97.3% (st. deviation = 0.4%)
+* Multi-class Support Vector Machines (linear kernel, e1071): 96.5%
 * Decision Tree based classifier: 89.63% 
