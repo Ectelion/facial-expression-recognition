@@ -11,6 +11,10 @@ overallOptimalFormulaSVMDisplacementKernlab <- emotion ~ X18+X33+X55+X63+X89+X91
 ## Optimal features for multi-class SVM classification (single frame approach)
 overallOptimalFormulaSVMSingleFrame <- emotion ~ X8+X21+X27+X49+X53+X65+X76+X88+X89+X90+X93+X97+X102+X104+X110+X115+X117+X118+X121+X122+X124+X125+X128+X130+X135+X136
 
+## Optimal features for multi-class SVM classification Kernlab ksvm implementation (single frame approach)
+overallOptimalFormulaSVMSingleFrameKernlab <- emotion ~ X55+X62+X65+X91+X99+X116+X117+X118+X121+X122+X127+X130+X131+X134+X136+X93+X100+X49+X68+X98
+
+
 ## Optimal features for a specific emotion (for binary SVM classification)
 optimalFormulasSVM <- list(
     emotion ~ X40+X43+X48+X92+X111+X127,
@@ -25,16 +29,16 @@ optimalFormulasSVM <- list(
 ## Creates SVM based classifier object.
 ## Includes methods for prediction, cross validation, etc.
 ## @formula parameter is used to specify labels & features. 
-## @params accepts a list of optional parameters to the classifier. 
+## @params accepts a list of optional parameters to be passed to the classifier. 
 ## @params$type specifies SVM implementation to be used. Available options: {"kernlab", "e1071"}
 
 initSVMClassifier <- function(trainingSet, formula = NULL, params = list(type = NULL)) {
     # Training phase
     if (is.null(params$type) || (!is.null(params$type) && params$type == "kernlab")) {
         if (is.null(formula)) {
-            formula <- overallOptimalFormulaSVMDisplacementKernlab  
+            formula <- overallOptimalFormulaSVMSingleFrameKernlab  
         }
-        svm.classifier <- ksvm(formula, data = trainingSet, type = "C-svc", kernel = 'rbfdot', C = 10, tol=0.001, cross = 10)  
+        svm.classifier <- ksvm(formula, data = trainingSet, type = "C-svc", kernel = 'rbfdot', C = 10, tol=0.001) # cross = 10)  
         # "cross = 10" parameter results in minor improvement (0.1-0.2%) by the cost of training time        
     } else {
         if (is.null(formula)) {
