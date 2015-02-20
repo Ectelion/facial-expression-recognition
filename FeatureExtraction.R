@@ -152,11 +152,12 @@ loadData <- function(inputFolderPath = faceExpressionsFolder) {
     trainingData
 }
 
-## Returns: labeled training data with peak emotions as features. 
-## @loadNeutral - using this, neutral emotions may be optionally included.  
-## @balanceLabels - balances the number of neutral faces in the data to avoid biased training. 
+## Returns: labeled training data with peak emotions as features
+## @loadNeutral - using this, neutral emotions may be optionally included
+## @balanceLabels - balances the number of neutral faces in the data to avoid biased training
+## @scaleData - whether the data should be scaled to zero mean and standard deviation of 1 
 
-loadPeakEmotions <- function(inputFolderPath = faceExpressionsFolder, loadNeutral = FALSE, balanceLabels = TRUE) {
+loadPeakEmotions <- function(inputFolderPath = faceExpressionsFolder, loadNeutral = FALSE, balanceLabels = FALSE, scaleData = TRUE) {
     emotionCode <- 1
     trainingData <- data.frame()
     labelsColumn <- data.frame()
@@ -168,16 +169,20 @@ loadPeakEmotions <- function(inputFolderPath = faceExpressionsFolder, loadNeutra
             folders <- list.dirs(emotionFolder, recursive = FALSE)
           
             for (folder in folders) { 
-                    emotionalFace <- read.table(paste(folder, "em.dat", sep = "/"))
+                emotionalFace <- read.table(paste(folder, "em.dat", sep = "/"))
+                if (scaleData) {
                     emotionalFace <- normalizeMatrix(emotionalFace)
-                    emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
-                    trainingData <<- rbind.data.frame(trainingData, emotionalFeatures)
-                    labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
+                }
+                emotionalFeatures <- c(emotionalFace[, 1], emotionalFace[, 2])  	  	
+                trainingData <<- rbind.data.frame(trainingData, emotionalFeatures)
+                labelsColumn <<- rbind.data.frame(labelsColumn, emotionCode)
                 
                 if (loadNeutral) {
                     if (!balanceLabels || cnt%%7 == 0) {
                         neutralFace <- read.table(paste(folder, "n.dat", sep = "/"))
-                        neutralFace <- normalizeMatrix(neutralFace)
+                        if (scaleData) {
+                            neutralFace <- normalizeMatrix(neutralFace)
+                        }
                         neutralFeatures <- c(neutralFace[, 1], neutralFace[, 2])
                         trainingData <<- rbind.data.frame(trainingData, neutralFeatures)
                         labelsColumn <<- rbind.data.frame(labelsColumn, 8)
@@ -321,4 +326,30 @@ copyUnlabeledData <- function(targetDirectory = "Unlabeled data") {
             file.copy(from = fromPath, to = targetDirectory)
         }
     )
+}
+
+## Given a data, generate new samples based on the data's distribution properties
+## Caution: possible linear dependence between the features
+
+generateData <- function(data, labelsColumnID = ncol(data), N = 30) {
+    classes <- unique(data[, labelsColumnID])
+    classesNum <- length(classes)
+    featuresNum <- ncol(data) - 1
+    groupedData <- split(data, data[, labelsColumnID]) 
+    generatedData <- c()
+    
+    # For each class, estimate distribution properties and based on them generate new data 
+    for (class in classes) {
+        generatedRows <- c()
+        for (featureId in 1:featuresNum) {
+            classMean <- mean(groupedData[[class]][, featureId])
+            classVariance <- var(groupedData[[class]][, featureId])
+            generatedColumn <- rnorm(N, mean = classMean, sd = sqrt(classVariance))
+            generatedRows <- cbind(generatedRows, generatedColumn)
+        }
+        generatedRows <- cbind(generatedRows, rep(class, nrow(generatedRows)))
+        generatedData <- rbind(generatedData, generatedRows)
+    }
+    colnames(generatedData) <- colnames(data)
+    as.data.frame(generatedData)
 }
