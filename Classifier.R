@@ -1,7 +1,9 @@
+source("FeatureExtraction.R")
 source("RandomForestClassifier.R")
 source("BinaryClassifier.R")
 source("DecisionTreeClassifier.R")
 source("SVMClassifier.R")
+source("NeuralNetworkClassifier.R")
 
 ## Specifies a common interface for a variety of classifier objects, containing 
 ## functionality for training, prediction, cross validation, etc.
@@ -26,6 +28,13 @@ classifier <- function(data, type = "decision_tree", formula = NULL, params = li
     }
     else if (type == "svm") {
         classifier <- initSVMClassifier(data, formula, params)
+    } 
+    else if (type == "svm2") {
+        params <- list(params, type = "e1071")
+        classifier <- initSVMClassifier(data, formula, params)
+    } 
+    else if (type == "neural_network") {
+        classifier <- initNNClassifier(data, formula, params)
     } 
     else if (type == "gp") {
         classifier <- initGPClassifier(data, formula)
