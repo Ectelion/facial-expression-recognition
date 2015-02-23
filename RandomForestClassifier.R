@@ -68,12 +68,24 @@ initForest2 <- function(trainingSet, formula = NULL, treesNum = 10) {
 ## Random Forest implementation based on the randomForest package.
 ## @formula parameter is used to specify labels & features
 
-initForest <- function(trainingSet, formula = NULL, treesNum = 100) {
+initForest <- function(trainingSet, formula = NULL, treesNum = 200) {
     # Training phase
     if (is.null(formula)) {
         formula <- emotion ~ . #X1+X11+X18+X43+X52+X87+X89+X91+X92+X101+X102+X117+X118+X120+X123+X125
     }
-    forest <- randomForest(formula, data = dataSet, importance = TRUE, proximity = TRUE, ntree = treesNum) # maxnodes = 15, nodesize = 10)
+    priors <- c(0.13761468, 0.05504587, 0.18042813, 0.07645260, 0.21100917, 0.08562691, 0.25382263)
+    forest <- randomForest(formula, 
+                           ntree = treesNum
+                           corr.bias = TRUE, 
+                           data = dataSet, 
+                           importance = TRUE,
+                           # strata = factor(dataSet[,137]),                           
+                           # classwt = priors, 
+                           # mtry = 45,
+                           # proximity = TRUE,
+                           # maxnodes = 15, 
+                           # nodesize = 10
+                           ) 
     
     forest.predict <- function(entry) {
         predict(forest, entry)
