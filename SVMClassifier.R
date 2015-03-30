@@ -1,3 +1,8 @@
+# Copyright (C) 2015 Rustem Bekmukhametov
+# This program is free software: you can redistribute it and/or modify it under the terms of the 
+# GNU General Public License as published by the Free Software Foundation, either version 3 of the 
+# License, or (at your option) any later version.
+
 # Dependencies
 library(kernlab)
 library(e1071)
@@ -36,13 +41,13 @@ initSVMClassifier <- function(trainingSet, formula = NULL, params = list(type = 
     # Training phase
     if (is.null(params$type) || (!is.null(params$type) && params$type == "kernlab")) {
         if (is.null(formula)) {
-            formula <- overallOptimalFormulaSVMSingleFrameKernlab  
+            formula <- overallOptimalFormulaSVMDisplacementKernlab  
         }
         svm.classifier <- ksvm(formula, data = trainingSet, type = "C-svc", kernel = 'rbfdot', C = 10, tol=0.001) # cross = 10)  
         # "cross = 10" parameter results in minor improvement (0.1-0.2%) by the cost of training time        
     } else {
         if (is.null(formula)) {
-            formula <- overallOptimalFormulaSVMDisplacement
+            formula <- overallOptimalFormulaSVMSingleFrame  # overallOptimalFormulaSVMDisplacement
         }
         svm.classifier <- svm(formula, data = trainingSet, kernel = "linear", type = "C-classification")
     }
@@ -54,7 +59,7 @@ initSVMClassifier <- function(trainingSet, formula = NULL, params = list(type = 
     svm.hitsNum <- function(inputs, trueLabels) {
         predictions <- svm.predict(inputs)
         hits <- predictions == trueLabels
-        print(predictions)
+        #print(predictions)
         hitsNum <- sum(hits)
         hitsNum
     }

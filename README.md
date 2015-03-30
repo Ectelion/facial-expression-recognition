@@ -1,6 +1,7 @@
 Facial Expression Recognition
 =============================
-
+Copyright (C) 2015  Rustem Bekmukhametov
+  
 The main purpose of the project is recognition of emotions based on facial expressions. Cohn-Kanade data set 
 (http://www.pitt.edu/~emotion/ck-spread.htm) is used for explorations and training.
 

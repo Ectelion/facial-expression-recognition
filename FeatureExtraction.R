@@ -1,3 +1,8 @@
+# Copyright (C) 2015 Rustem Bekmukhametov
+# This program is free software: you can redistribute it and/or modify it under the terms of the 
+# GNU General Public License as published by the Free Software Foundation, either version 3 of the 
+# License, or (at your option) any later version.
+
 ## Libs
 library(rpart)
 library(cvTools)
@@ -344,7 +349,7 @@ generateData <- function(data, labelsColumnID = ncol(data), N = 30) {
         for (featureId in 1:featuresNum) {
             classMean <- mean(groupedData[[class]][, featureId])
             classVariance <- var(groupedData[[class]][, featureId])
-            generatedColumn <- rnorm(N, mean = classMean, sd = sqrt(classVariance))
+            generatedColumn <- rep(classMean, N) + rnorm(N, mean = 0, sd = 1) #rnorm(N, mean = classMean, sd = classVariance)
             generatedRows <- cbind(generatedRows, generatedColumn)
         }
         generatedRows <- cbind(generatedRows, rep(class, nrow(generatedRows)))
